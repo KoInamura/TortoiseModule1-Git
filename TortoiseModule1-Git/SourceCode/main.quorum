@@ -329,7 +329,7 @@ class Main is Game, CollisionListener2D
         
         tortoise:MoveTo(100, 550)
 //**** THIS IS WHERE YOUR CODE STARTS ****************************************
-        Forward()
+        Forward(1)
 //*** THIS IS WHERE YOUR CODE ENDS ********************************************
 
         AddCollisionListener(me)
@@ -410,7 +410,7 @@ class Main is Game, CollisionListener2D
         end
     end
     
-    action Forward
+    action Forward(integer forwardOption)
         if forwardOption = 1
             tortoise:MoveTo(100, 400)
         end
