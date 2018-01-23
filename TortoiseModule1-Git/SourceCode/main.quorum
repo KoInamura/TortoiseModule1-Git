@@ -1,36 +1,419 @@
 use Libraries.Game.Game
+use Libraries.Game.Graphics.Drawable
+use Libraries.Game.Graphics.Color
+use Libraries.Interface.Events.CollisionEvent2D
+use Libraries.Interface.Events.CollisionListener2D
+use Libraries.Interface.Item2D
+use Sprite
 
-/*
-    This is a default class for creating a game in Quorum. Note that the Main 
-    action begins by calling StartGame(), which loads a window a game can 
-    be displayed in. The action CreateGame is where the game should load any 
-    assets, like images to be displayed, frames of animation, or sounds to be
-    played. 
-*/
-class Main is Game
-    /*
-        This action, Main, starts our computer program. In Quorum, programs always
-        begin from Main.
-    */
+class Main is Game, CollisionListener2D
+    Sprite tortoise         // tortoise
+
+    Drawable dotA1
+    Drawable dotA2
+    Drawable dotA3
+    Drawable dotA4
+    Drawable dotB1
+    Drawable dotB2
+    Drawable dotB3
+    Drawable dotB4
+    Drawable dotC1
+    Drawable dotC2
+    Drawable dotC3
+    Drawable dotC4
+    Drawable dotD1
+    Drawable dotD2
+    Drawable dotD3
+    Drawable dotD4
+    
+    Drawable lineA1A2
+    Drawable lineA2A3
+    Drawable lineA3A4
+    Drawable lineB1B2
+    Drawable lineB2B3
+    Drawable lineB3B4
+    Drawable lineC1C2
+    Drawable lineC2C3
+    Drawable lineC3C4
+    Drawable lineD1D2
+    Drawable lineD2D3
+    Drawable lineD3D4
+
+    Drawable lineA1B1
+    Drawable lineB1C1
+    Drawable lineC1D1
+    Drawable lineA2B2
+    Drawable lineB2C2
+    Drawable lineC2D2
+    Drawable lineA3B3
+    Drawable lineB3C3
+    Drawable lineC3D3
+    Drawable lineA4B4
+    Drawable lineB4C4
+    Drawable lineC4D4
+
+    Color color
+    Color red = color:Red()
+    Color blue = color:Blue()
+
+    integer direction = 0
+
+    number currentX = 0
+    number currentY = 0
+
+    boolean dotSensitivity = true
+
+    integer forwardOption = 0
+
     action Main
         StartGame()
     end
 
-    /*
-        This action sets up the default values for a game. For example, we might
-        use the Libraries.Game.Graphics.Drawable class to load up an image or 
-        a shape. Or, we might add a Libraries.Interface.Button for making something clickable
-        or a Libraries.Interface.TextBox for gathering user input in a game.
-    */
     action CreateGame
+        dotA1:LoadFilledCircle(10, red)
+        dotA1:SetPosition(100, 550)
+        Add(dotA1)
+        dotA2:LoadFilledCircle(10, red)
+        dotA2:SetPosition(100, 400)
+        Add(dotA2)
+        dotA3:LoadFilledCircle(10, red)
+        dotA3:SetPosition(100, 250)
+        Add(dotA3)
+        dotA4:LoadFilledCircle(10, red)
+        dotA4:SetPosition(100, 100)
+        Add(dotA4)
+        
+        dotB1:LoadFilledCircle(10, red)
+        dotB1:SetPosition(250, 550)
+        Add(dotB1)
+        dotB2:LoadFilledCircle(10, red)
+        dotB2:SetPosition(250, 400)
+        Add(dotB2)
+        dotB3:LoadFilledCircle(10, red)
+        dotB3:SetPosition(250, 250)
+        Add(dotB3)
+        dotB4:LoadFilledCircle(10, red)
+        dotB4:SetPosition(250, 100)
+        Add(dotB4)
+
+        dotC1:LoadFilledCircle(10, red)
+        dotC1:SetPosition(400, 550)
+        Add(dotC1)
+        dotC2:LoadFilledCircle(10, red)
+        dotC2:SetPosition(400, 400)
+        Add(dotC2)
+        dotC3:LoadFilledCircle(10, red)
+        dotC3:SetPosition(400, 250)
+        Add(dotC3)
+        dotC4:LoadFilledCircle(10, red)
+        dotC4:SetPosition(400, 100)
+        Add(dotC4)
+
+        dotD1:LoadFilledCircle(10, red)
+        dotD1:SetPosition(550, 550)
+        Add(dotD1)
+        dotD2:LoadFilledCircle(10, red)
+        dotD2:SetPosition(550, 400)
+        Add(dotD2)
+        dotD3:LoadFilledCircle(10, red)
+        dotD3:SetPosition(550, 250)
+        Add(dotD3)
+        dotD4:LoadFilledCircle(10, red)
+        dotD4:SetPosition(550, 100)
+        Add(dotD4)
+
+        lineA1A2:LoadFilledRectangle(5, 110, blue)
+        lineA1A2:SetPosition(108, 430)
+        Add(lineA1A2)
+        lineA2A3:LoadFilledRectangle(5, 110, blue)
+        lineA2A3:SetPosition(108, 280)
+        Add(lineA2A3)
+        lineA3A4:LoadFilledRectangle(5, 110, blue)
+        lineA3A4:SetPosition(108, 130)
+        Add(lineA3A4)
+
+        lineB1B2:LoadFilledRectangle(5, 110, blue)
+        lineB1B2:SetPosition(258, 430)
+        Add(lineB1B2)
+        lineB2B3:LoadFilledRectangle(5, 110, blue)
+        lineB2B3:SetPosition(258, 280)
+        Add(lineB2B3)
+        lineB3B4:LoadFilledRectangle(5, 110, blue)
+        lineB3B4:SetPosition(258, 130)
+        Add(lineB3B4)
+
+        lineC1C2:LoadFilledRectangle(5, 110, blue)
+        lineC1C2:SetPosition(408, 430)
+        Add(lineC1C2)
+        lineC2C3:LoadFilledRectangle(5, 110, blue)
+        lineC2C3:SetPosition(408, 280)
+        Add(lineC2C3)
+        lineC3C4:LoadFilledRectangle(5, 110, blue)
+        lineC3C4:SetPosition(408, 130)
+        Add(lineC3C4)
+
+        lineD1D2:LoadFilledRectangle(5, 110, blue)
+        lineD1D2:SetPosition(558, 430)
+        Add(lineD1D2)
+        lineD2D3:LoadFilledRectangle(5, 110, blue)
+        lineD2D3:SetPosition(558, 280)
+        Add(lineD2D3)
+        lineD3D4:LoadFilledRectangle(5, 110, blue)
+        lineD3D4:SetPosition(558, 130)
+        Add(lineD3D4)
+
+        lineA1B1:LoadFilledRectangle(110, 5, blue)
+        lineA1B1:SetPosition(130, 558)
+        Add(lineA1B1)
+        lineB1C1:LoadFilledRectangle(110, 5, blue)
+        lineB1C1:SetPosition(280, 558)
+        Add(lineB1C1)
+        lineC1D1:LoadFilledRectangle(110, 5, blue)
+        lineC1D1:SetPosition(430, 558)
+        Add(lineC1D1)
+
+        lineA2B2:LoadFilledRectangle(110, 5, blue)
+        lineA2B2:SetPosition(130, 408)
+        Add(lineA2B2)
+        lineB2C2:LoadFilledRectangle(110, 5, blue)
+        lineB2C2:SetPosition(280, 408)
+        Add(lineB2C2)
+        lineC2D2:LoadFilledRectangle(110, 5, blue)
+        lineC2D2:SetPosition(430, 408)
+        Add(lineC2D2)
+
+        lineA3B3:LoadFilledRectangle(110, 5, blue)
+        lineA3B3:SetPosition(130, 258)
+        Add(lineA3B3)
+        lineB3C3:LoadFilledRectangle(110, 5, blue)
+        lineB3C3:SetPosition(280, 258)
+        Add(lineB3C3)
+        lineC3D3:LoadFilledRectangle(110, 5, blue)
+        lineC3D3:SetPosition(430, 258)
+        Add(lineC3D3)
+        
+        lineA4B4:LoadFilledRectangle(110, 5, blue)
+        lineA4B4:SetPosition(130, 108)
+        Add(lineA4B4)
+        lineB4C4:LoadFilledRectangle(110, 5, blue)
+        lineB4C4:SetPosition(280, 108)
+        Add(lineB4C4)
+        lineC4D4:LoadFilledRectangle(110, 5, blue)
+        lineC4D4:SetPosition(430, 108)
+        Add(lineC4D4)
+
+        //Setting the neame for collision for dots
+
+        dotA1:SetName("a1")
+        dotA2:SetName("a2")
+        dotA3:SetName("a3")
+        dotA4:SetName("a4")
+        dotB1:SetName("b1")
+        dotB2:SetName("b2")
+        dotB3:SetName("b3")
+        dotB4:SetName("b4")
+        dotC1:SetName("c1")
+        dotC2:SetName("c2")
+        dotC3:SetName("c3")
+        dotC4:SetName("c4")
+        dotD1:SetName("d1")
+        dotD2:SetName("d2")
+        dotD3:SetName("d3")
+        dotD4:SetName("d4")
+
+        //Making the dots collidable
+        dotA1:SetCollidable(true)
+        dotA2:SetCollidable(true)
+        dotA3:SetCollidable(true)
+        dotA4:SetCollidable(true)
+        dotB1:SetCollidable(true)
+        dotB2:SetCollidable(true)
+        dotB3:SetCollidable(true)
+        dotB4:SetCollidable(true)
+        dotC1:SetCollidable(true)
+        dotC2:SetCollidable(true)
+        dotC3:SetCollidable(true)
+        dotC4:SetCollidable(true)
+        dotD1:SetCollidable(true)
+        dotD2:SetCollidable(true)
+        dotD3:SetCollidable(true)
+        dotD4:SetCollidable(true)
+
+        //Setting the name for collision for lines
+        lineA1A2:SetName("a1a2")
+        lineA2A3:SetName("a2a3")
+        lineA3A4:SetName("a3a4")
+        lineB1B2:SetName("b1b2")
+        lineB2B3:SetName("b2b3")
+        lineB3B4:SetName("b3b4")
+        lineC1C2:SetName("c1c2")
+        lineC2C3:SetName("c2c3")
+        lineC3C4:SetName("c3c4")
+        lineD1D2:SetName("d1d2")
+        lineD2D3:SetName("d2d3")
+        lineD3D4:SetName("d3d4")
+
+        lineA1B1:SetName("a1b1")
+        lineB1C1:SetName("b1c1")
+        lineC1D1:SetName("c1d1")
+        lineA2B2:SetName("a2b2")
+        lineB2C2:SetName("b2c2")
+        lineC2D2:SetName("c2d2")
+        lineA3B3:SetName("a3b3")
+        lineB3C3:SetName("b3c3")
+        lineC3D3:SetName("c3d3")
+        lineA4B4:SetName("a4b4")
+        lineB4C4:SetName("b4c4")
+        lineC4D4:SetName("c4d4")
+
+        //Making lines collidable
+        lineA1A2:SetCollidable(true)
+        lineA2A3:SetCollidable(true)
+        lineA3A4:SetCollidable(true)
+        lineB1B2:SetCollidable(true)
+        lineB2B3:SetCollidable(true)
+        lineB3B4:SetCollidable(true)
+        lineC1C2:SetCollidable(true)
+        lineC2C3:SetCollidable(true)
+        lineC3C4:SetCollidable(true)
+        lineD1D2:SetCollidable(true)
+        lineD2D3:SetCollidable(true)
+        lineD3D4:SetCollidable(true)
+
+        lineA1B1:SetCollidable(true)
+        lineB1C1:SetCollidable(true)
+        lineC1D1:SetCollidable(true)
+        lineA2B2:SetCollidable(true)
+        lineB2C2:SetCollidable(true)
+        lineC2D2:SetCollidable(true)
+        lineA3B3:SetCollidable(true)
+        lineB3C3:SetCollidable(true)
+        lineC3D3:SetCollidable(true)
+        lineA4B4:SetCollidable(true)
+        lineB4C4:SetCollidable(true)
+        lineC4D4:SetCollidable(true)
+
+        //Hide the line at the beginning
+        lineA1A2:Hide()
+        lineA2A3:Hide()
+        lineA3A4:Hide()
+        lineB1B2:Hide()
+        lineB2B3:Hide()
+        lineB3B4:Hide()
+        lineC1C2:Hide()
+        lineC2C3:Hide()
+        lineC3C4:Hide()
+        lineD1D2:Hide()
+        lineD2D3:Hide()
+        lineD3D4:Hide()
+
+        lineA1B1:Hide()
+        lineB1C1:Hide()
+        lineC1D1:Hide()
+        lineA2B2:Hide()
+        lineB2C2:Hide()
+        lineC2D2:Hide()
+        lineA3B3:Hide()
+        lineB3C3:Hide()
+        lineC3D3:Hide()
+        lineA4B4:Hide()
+        lineB4C4:Hide()
+        lineC4D4:Hide()
+
+        tortoise:Load("TortoiseBadge.png")
+        tortoise:SetInitialPosition(100, 600)
+        tortoise:SetSpeed(25)
+        tortoise:SetName("tortoise")
+        tortoise:SetCollidable(true)
+        Add(tortoise)
+        
+        tortoise:MoveTo(100, 550)
+//**** THIS IS WHERE YOUR CODE STARTS ****************************************
+        Forward()
+//*** THIS IS WHERE YOUR CODE ENDS ********************************************
+
+        AddCollisionListener(me)
     end
 
-    /*
-        The update action is called on every "frame" of animation in a game. This
-        action should be used to do operations on items. So, for example, we 
-        might use this action to change frames of animation, to rotate items, 
-        or to make creatures jump.
-    */
     action Update(number seconds)
+        tortoise:Update(seconds)
+    end
+
+    action BeginCollision(CollisionEvent2D event)
+        Drawable itemA = cast(Drawable, event:GetItemA())
+        Drawable itemB = cast(Drawable, event:GetItemB())
+
+        //Making lines visible as they collide withthe tortoise
+        if dotSensitivity = true
+            if itemA:GetName() = "a1a2"
+                lineA1A2:Show()
+            elseif itemA:GetName() = "a2a3"
+                lineA2A3:Show()
+            elseif itemA:GetName() = "a3a4"
+                lineA3A4:Show()
+            elseif itemA:GetName() = "b1b2"
+                lineB1B2:Show()
+            elseif itemA:GetName() = "b2b3"
+                lineB2B3:Show()
+            elseif itemA:GetName() = "b3b4"
+                lineB3B4:Show()
+            elseif itemA:GetName() = "c1c2"
+                lineC1C2:Show()
+            elseif itemA:GetName() = "c2c3"
+                lineC2C3:Show()
+            elseif itemA:GetName() = "c3c4"
+                lineC3C4:Show()
+            elseif itemA:GetName() = "d1d2"
+                lineD1D2:Show()
+            elseif itemA:GetName() = "d2d3"
+                lineD2D3:Show()
+            elseif itemA:GetName() = "d3d4"
+                lineD3D4:Show()
+            elseif itemA:GetName() = "a1b1"
+                lineA1B1:Show()
+            elseif itemA:GetName() = "b1c1"
+                lineB1C1:Show()
+            elseif itemA:GetName() = "c1d1"
+                lineC1D1:Show()
+            elseif itemA:GetName() = "a2b2"
+                lineA2B2:Show()
+            elseif itemA:GetName() = "b2c2"
+                lineB2C2:Show()
+            elseif itemA:GetName() = "c2d2"
+                lineC2D2:Show()
+            elseif itemA:GetName() = "a3b3"
+                lineA3B3:Show()
+            elseif itemA:GetName() = "b3c3"
+                lineB3C3:Show()
+            elseif itemA:GetName() = "c3d3"
+                lineC3D3:Show()
+            elseif itemA:GetName() = "a4b4"
+                lineA4B4:Show()
+            elseif itemA:GetName() = "b4c4"
+                lineB4C4:Show()
+            elseif itemA:GetName() = "c4d4"
+                lineC4D4:Show()
+            elseif itemA:GetName() = "a1"
+                forwardOption = 1
+                dotSensitivity = false
+            end
+        end
+
+    end
+
+    action FinishCollision(CollisionEvent2D event)
+        Drawable itemA = cast(Drawable, event:GetItemA())
+        Drawable itemB = cast(Drawable, event:GetItemB())
+
+        if itemA:GetName() = "a1"
+            dotSensitivity = true
+        end
+    end
+    
+    action Forward
+        if forwardOption = 1
+            tortoise:MoveTo(100, 400)
+        end
     end
 end
+    

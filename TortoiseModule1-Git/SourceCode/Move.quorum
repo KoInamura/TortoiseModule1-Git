@@ -1,0 +1,90 @@
+// Class implements movements for the tortoise and hare for the game. Move
+// inherits from State. The Move state allows a drawable to move to a certain
+// coordinate at a given speed.
+use Libraries.Compute.Math
+
+class Move
+    private number xTarget = 0
+    private number yTarget = 0
+    private number xPercent = 0
+    private number yPercent = 0
+    private number xStart = 0
+    private number yStart = 0
+    private Math math
+    private boolean startSet = false
+
+    // This action sets the x-coordinate of the target coordinate.
+    //
+    // Parameters:
+    //      number x:
+    //          The number to set as the x-coordinate of the target
+    action SetTargetX(number x)
+        xTarget = x
+    end
+    
+    // This action sets the y-coordinate of the target coordinate
+    //
+    // Parameters:
+    //      number y:
+    //          The number to set as the y-coordinate of the target
+    action SetTargetY(number y)
+        yTarget = y
+    end
+    
+    // This action sets the target coordinate
+    //
+    // Parameters:
+    //      number x:
+    //          The number to set as the x-coordinate of the target
+    //      number y:
+    //          The number to set as the y-coordinate of the target
+    action SetTarget(number x, number y)
+        xTarget = x
+        yTarget = y        
+    end
+
+    // This action returns the x-coordinate of the target
+    //
+    // Returns:
+    //      number: the target x-coordinate
+    action GetTargetX() returns number
+        return xTarget
+    end
+    
+    // This action returns the y-coordinate of the target
+    //
+    // Returns:
+    //      number: the target y-coordinate
+    action GetTargetY() returns number
+        return yTarget
+    end
+
+    action GetXPercent() returns number
+        return xPercent
+    end
+
+    action GetYPercent() returns  number
+        return yPercent
+    end
+
+    action GetXStart() returns number
+        return xStart
+    end
+
+    action GetYStart() returns number
+        return yStart
+    end
+
+    action SetStart(number x, number y)
+        if not startSet
+            xStart = x
+            yStart = y
+            number xDist = xTarget - xStart
+            number yDist = yTarget - yStart
+            number dist = math:SquareRoot(xDist * xDist + yDist * yDist)
+            xPercent = xDist / dist
+            yPercent = yDist / dist
+            startSet = true
+        end
+    end
+end

@@ -1,0 +1,95 @@
+// Class implements a sprite for a tortoise vs. hare race game. Sprite inherits
+// from drawable. Sprite allows the user to load an image for the sprite as well
+// as queue up moves. A move will not execute until the current move is done.
+
+use Libraries.Game.Graphics.Drawable
+use Libraries.Containers.Queue
+use Move
+
+class Sprite is Drawable
+    private number speed = 100
+
+    Queue<Move> moveQueue
+
+    // This action sets the initial position for the Sprite object. Additionally
+    // this action sets the initial move state for the Sprite to be not moving
+    // at that position.
+    //
+    // Parameters:
+    //      number x:
+    //          x-coordinate of initial position
+    //      number y:
+    //          y-coordinate of initial position
+    action SetInitialPosition(number x, number y)
+        SetPosition(x, y)
+    end
+
+    // This action sets the speed of the spirte.
+    //
+    // Parameters:
+    //      number s:
+    //          the number to set as the speed of the sprite
+    action SetSpeed(number s)
+        speed = s
+    end
+
+    // Action tells the sprite to move to a coordinate. This move command will
+    // execute when all move commands issued before it have completed.
+    //
+    // Parameters:
+    //      number x:
+    //          x-coordinate of where to move to
+    //      number y:
+    //          y-coordinate of where to move to
+    action MoveTo(number x, number y)
+        Move newMove
+        newMove:SetTarget(x, y)
+        moveQueue:Add(newMove)
+    end
+
+
+    // Action updates the sprite, deciding whether or not the sprite is ready
+    // to change move states. This is decided based on whether the sprite's
+    // coordinates are equal to the target move's coodinates.
+    //
+    // Parameters:
+    //      number time:
+    //          the number of seconds between frames
+    action Update(number time)
+        MoveSprite(time)
+    end
+
+    private action MoveSprite(number time)
+        if not moveQueue:IsEmpty()
+            newMoveSet = false
+
+            Move currentMove
+            currentMove = moveQueue:GetFromFront()
+            currentMove:SetStart(GetX(), GetY())
+            number xTarget = currentMove:GetTargetX()
+            number yTarget = currentMove:GetTargetY()
+            number newX = GetX()
+            number newY = GetY()
+
+            // if drawable is close enough to the target, just set the drawable
+            // to be at the target. This prevents the drawable from moving back
+            // and forth upon reaching the target coordinates
+            if (-1 * speed * time <= xTarget - newX and xTarget - newX <= speed * time)
+                SetX(xTarget)
+            end
+
+            if (-1 * speed * time <= yTarget - newY and yTarget - newY <= speed * time)
+                SetY(yTarget)
+            end
+
+            if GetX() = xTarget and GetY() = yTarget
+                moveQueue:RemoveFromFront()
+            end
+
+            newX = newX + speed * time * currentMove:GetXPercent()
+            newY = newY + speed * time * currentMove:GetYPercent()
+            SetX(newX)
+            SetY(newY)
+        end
+    end
+end
