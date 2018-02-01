@@ -7,11 +7,16 @@ use Libraries.Interface.Events.KeyboardEvent
 use Libraries.Interface.Events.CollisionEvent2D
 use Libraries.Interface.Events.CollisionListener2D
 use Libraries.Interface.Item2D
+use Libraries.Sound.Audio
 use Sprite
 
 class Main is Game, KeyboardListener, CollisionListener2D
     //Creating main character
     Sprite tortoise 
+
+    //Creating an object to give the user the direction the tortoise is facing
+    Audio tDir
+    Audio lineDrawn
 
     //Creating identifiable objects for lines
     Drawable lineA1A2
@@ -60,7 +65,11 @@ class Main is Game, KeyboardListener, CollisionListener2D
     // How large each row and column of our grid is.
     integer gridSize = 10
 
-    
+    //Creating the counter that keeps track of the direction the tortoise is facing
+    integer direction = 4
+
+    //Creating the boolean for PenDown/PenUp actions
+    boolean penReady = false
 
     action Main
         StartGame()
@@ -288,6 +297,18 @@ class Main is Game, KeyboardListener, CollisionListener2D
         tortoise:SetName("tortoise")
         tortoise:SetCollidable(true)
         Add(tortoise)
+
+        //Adding audio cue for the blind users
+        //Audio for the tortoise direction
+        tDir:Load("Audio/CowboyFootstep.wav")
+        tDir:PlayUntilDone()
+        
+        //Aduio for the line drawn
+        lineDrawn:Load("Audio/flyby.wav")
+
+//**** USER CODING AREA STARTS HERE ****
+    PenDown()
+//**** USER CODING AREA ENDS HERE ****
     end
 
     /*
@@ -328,6 +349,14 @@ class Main is Game, KeyboardListener, CollisionListener2D
                 tortoise:MoveTo(columnPosition *60, rowPosition *60)
             end
         end
+
+        if event:keyCode = event:SPACE
+            LineShowing()
+        end
+
+        if event:keyCode = event:Z
+            TurnLeft()
+        end
     end
 
     /*
@@ -351,134 +380,205 @@ class Main is Game, KeyboardListener, CollisionListener2D
     action BeginCollision(CollisionEvent2D event)
         Drawable itemA = cast(Drawable, event:GetItemA())
         Drawable itemB = cast(Drawable, event:GetItemB())
-
+        //Checking the penReady boolean
+        if penReady = true
         //Making lines visible as they collide withthe tortoise
             if itemA:GetName() = "a1a2"
                 lineA1A2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a2a3"
                 lineA2A3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a3a4"
                 lineA3A4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b1b2"
                 lineB1B2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b2b3"
                 lineB2B3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b3b4"
                 lineB3B4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c1c2"
                 lineC1C2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c2c3"
                 lineC2C3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c3c4"
                 lineC3C4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "d1d2"
                 lineD1D2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "d2d3"
                 lineD2D3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "d3d4"
                 lineD3D4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a1b1"
                 lineA1B1:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b1c1"
                 lineB1C1:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c1d1"
                 lineC1D1:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a2b2"
                 lineA2B2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b2c2"
                 lineB2C2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c2d2"
                 lineC2D2:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a3b3"
                 lineA3B3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b3c3"
                 lineB3C3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c3d3"
                 lineC3D3:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "a4b4"
                 lineA4B4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "b4c4"
                 lineB4C4:Show()
+                lineDrawn:Play()
             elseif itemA:GetName() = "c4d4"
                 lineC4D4:Show()
+                lineDrawn:Play()
             end
+        end
     end
+
+//******* Creating Actions to be used by Code.org/Quorum CSP curriculum
 
     action LineShowing()
         //Checking the horizontal line in rows first
         if lineA1A2:IsShowing()
-            arrayOfLines:Add("a1a2 ")
+            arrayOfLines:Add("a1a2, ")
         end
         if lineA2A3:IsShowing()
-            arrayOfLines:Add("a2a3 ")
+            arrayOfLines:Add("a2a3, ")
         end
         if lineA3A4:IsShowing()
-            arrayOfLines:Add("a3a4 ")
+            arrayOfLines:Add("a3a4, ")
         end
         if lineB1B2:IsShowing()
-            arrayOfLines:Add("b1b2 ")
+            arrayOfLines:Add("b1b2, ")
         end
         if lineB2B3:IsShowing()
-            arrayOfLines:Add("b2b3 ")
+            arrayOfLines:Add("b2b3, ")
         end
         if lineB3B4:IsShowing()
-            arrayOfLines:Add("b3b4 ")
+            arrayOfLines:Add("b3b4, ")
         end
         if lineC1C2:IsShowing()
-            arrayOfLines:Add("c1c2 ")
+            arrayOfLines:Add("c1c2, ")
         end
         if lineC2C3:IsShowing()
-            arrayOfLines:Add("c2c3 ")
+            arrayOfLines:Add("c2c3, ")
         end
         if lineC3C4:IsShowing()
-            arrayOfLines:Add("c3c4 ")
+            arrayOfLines:Add("c3c4, ")
         end
         if lineD1D2:IsShowing()
-            arrayOfLines:Add("d1d2 ")
+            arrayOfLines:Add("d1d2, ")
         end
         if lineD2D3:IsShowing()
-            arrayOfLines:Add("d2d3 ")
+            arrayOfLines:Add("d2d3, ")
         end
         if lineD3D4:IsShowing()
-            arrayOfLines:Add("d3d4 ")
+            arrayOfLines:Add("d3d4, ")
         end
 
         //Checking the vertical lines in the columns
         if lineA1B1:IsShowing()
-            arrayOfLines:Add("a1b1 ")
+            arrayOfLines:Add("a1b1, ")
         end
         if lineB1C1:IsShowing()
-            arrayOfLines:Add("b1c1 ")
+            arrayOfLines:Add("b1c1, ")
         end
         if lineC1D1:IsShowing()
-            arrayOfLines:Add("c1d1 ")
+            arrayOfLines:Add("c1d1, ")
         end
         if lineA2B2:IsShowing()
-            arrayOfLines:Add("a2b2 ")
+            arrayOfLines:Add("a2b2, ")
         end
         if lineB2C2:IsShowing()
-            arrayOfLines:Add("b2c2 ")
+            arrayOfLines:Add("b2c2, ")
         end
         if lineC2D2:IsShowing()
-            arrayOfLines:Add("c2d2 ")
+            arrayOfLines:Add("c2d2, ")
         end
         if lineA3B3:IsShowing()
-            arrayOfLines:Add("a3b3 ")
+            arrayOfLines:Add("a3b3, ")
         end
         if lineB3C3:IsShowing()
-            arrayOfLines:Add("b3c3 ")
+            arrayOfLines:Add("b3c3, ")
         end
         if lineC3D3:IsShowing()
-            arrayOfLines:Add("c3d3 ")
+            arrayOfLines:Add("c3d3, ")
         end
         if lineA4B4:IsShowing()
-            arrayOfLines:Add("a4b4 ")
+            arrayOfLines:Add("a4b4, ")
         end
         if lineB4C4:IsShowing()
-            arrayOfLines:Add("b4c4 ")
+            arrayOfLines:Add("b4c4, ")
         end
         if lineC4D4:IsShowing()
-            arrayOfLines:Add("c4d4 ")
+            arrayOfLines:Add("c4d4, ")
         end
+
+        text endingText = ""
+        text startingText = ""
+        integer counter = 0
+
+        repeat arrayOfLines:GetSize() times
+            startingText = startingText + arrayOfLines:Get(counter)
+            counter = counter +1
+        end
+        output "The followng lines are showing: " + startingText
+    end
+
+    action TurnLeft
+        tortoise:Rotate(-90)
+        direction = direction + 1
+
+        //Calculating wihch way the tortoise is facing
+        integer facing  = direction mod 4
+
+        //Giving the blind user the audio cue based on the direction
+        if facing = 0
+            tDir:PlayUntilDone()
+        elseif facing = 1
+            repeat 2 times
+                tDir:PlayUntilDone()
+            end
+        elseif facing = 2
+            repeat 3 times
+                tDir:PlayUntilDone()
+            end
+        elseif facing = 3
+            repeat 4 times
+                tDir:PlayUntilDone()
+            end
+        end
+    end
+
+    action PenDown
+        penReady = true
+    end
+
+    action PenUp
+        penReady = false
     end
 end
