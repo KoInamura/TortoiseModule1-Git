@@ -1,0 +1,3 @@
+class Command 
+    // Used as an interface for various commands performed by the Turtle.
+end

@@ -1,0 +1,18 @@
+class RotationCommand is Command
+    
+    public integer LEFT = 1
+    public integer RIGHT = 2
+    integer direction = 0
+
+    action TurnLeft
+        direction = 1
+    end
+
+    action TurnRight
+        direction = -1
+    end
+
+    action GetDirection returns integer
+        return direction
+    end
+end

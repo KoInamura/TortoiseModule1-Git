@@ -3,7 +3,7 @@
 // coordinate at a given speed.
 use Libraries.Compute.Math
 
-class Move
+class MoveCommand is Command
     private number xTarget = 0
     private number yTarget = 0
     private number xPercent = 0
@@ -12,6 +12,8 @@ class Move
     private number yStart = 0
     private Math math
     private boolean startSet = false
+
+    private number distance = 0
 
     // This action sets the x-coordinate of the target coordinate.
     //
@@ -86,5 +88,13 @@ class Move
             yPercent = yDist / dist
             startSet = true
         end
+    end
+
+    action SetDistance(number newDistance)
+        distance = newDistance
+    end
+
+    action GetDistance returns number
+        return distance
     end
 end
