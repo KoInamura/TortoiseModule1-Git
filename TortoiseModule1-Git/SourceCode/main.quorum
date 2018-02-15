@@ -1,10 +1,14 @@
 class Main is TurtleProgram
     action Main
+//** This is the place for the SetStartPos()
+        SetStartPosition(1)
         StartGame()
     end
 
     action TurtleCommands
         //**** USER CODING AREA STARTS HERE ****
+        
+
         PenDown()
         Forward()
         TurnLeft()
@@ -42,4 +46,6 @@ class Main is TurtleProgram
         Forward()
         //**** USER CODING AREA ENDS HERE ****
     end
+
+    
 end

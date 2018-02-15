@@ -118,7 +118,7 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
         end
 
         // Set our starting position.
-        ActivateDot(0, 0)
+        // Take this off to implement the SetStartPos() ActivateDot(0, 0)
 
         //Adding the main character to the game
         tortoise:Load("TortoiseBadge.png")
@@ -304,5 +304,12 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
             counter = counter +1
         end
         output "The turtle has followed this path: " + startingText
+    end
+
+    action SetStartPosition(integer x)
+        if x = 1
+            columnPosition = 1
+            rowPosition = 0
+        end
     end
 end
