@@ -1,0 +1,170 @@
+// Class implements a sprite for a tortoise vs. hare race game. Sprite inherits
+// from drawable. Sprite allows the user to load an image for the sprite as well
+// as queue up moves. A move will not execute until the current move is done.
+
+use Libraries.Game.Graphics.Drawable
+use Libraries.Containers.Queue
+
+class Turtle is Drawable
+    private number speed = 100
+    /*
+    Direction points along the four cardinal directions using these values:
+    0: UP
+    1: LEFT
+    2: DOWN
+    3: RIGHT
+    */
+    public constant integer UP = 0
+    public constant integer LEFT = 1
+    public constant integer DOWN = 2
+    public constant integer RIGHT = 3
+    integer direction = 0
+    boolean penDown = true
+
+    Queue<Command> commandQueue
+
+    // This action sets the initial position for the Sprite object. Additionally
+    // this action sets the initial move state for the Sprite to be not moving
+    // at that position.
+    //
+    // Parameters:
+    //      number x:
+    //          x-coordinate of initial position
+    //      number y:
+    //          y-coordinate of initial position
+    action SetInitialPosition(number x, number y)
+        SetPosition(x, y)
+    end
+
+    // This action sets the speed of the spirte.
+    //
+    // Parameters:
+    //      number s:
+    //          the number to set as the speed of the sprite
+    action SetSpeed(number s)
+        speed = s
+    end
+
+    // Action tells the sprite to move to a coordinate. This move command will
+    // execute when all move commands issued before it have completed.
+    //
+    // Parameters:
+    //      number x:
+    //          x-coordinate of where to move to
+    //      number y:
+    //          y-coordinate of where to move to
+    action MoveTo(number x, number y)
+        MoveCommand newMove
+        newMove:SetTarget(x, y)
+        commandQueue:Add(newMove)
+    end
+
+    action MoveDistance(number distance)
+        MoveCommand newMove
+        newMove:SetDistance(distance)
+        commandQueue:Add(newMove)
+    end
+
+
+    // Action updates the sprite, deciding whether or not the sprite is ready
+    // to change move states. This is decided based on whether the sprite's
+    // coordinates are equal to the target move's coodinates.
+    //
+    // Parameters:
+    //      number time:
+    //          the number of seconds between frames
+    action Update(number time)
+        MoveSprite(time)
+    end
+
+    private action MoveSprite(number time)
+        if not commandQueue:IsEmpty()
+            newMoveSet = false
+
+            Command currentCommand = commandQueue:GetFromFront()
+
+            if currentCommand is RotationCommand
+                RotationCommand rotation = cast(RotationCommand, currentCommand)
+                if rotation:GetDirection() = rotation:LEFT
+                    Rotate(-90)
+                    direction = (direction + 1) mod 4
+                elseif rotation:GetDirection() = rotation:RIGHT
+                    Rotate(90)
+                    direction = direction - 1
+                    if direction < 0
+                        direction = 3
+                    end
+                end
+                commandQueue:RemoveFromFront()
+            elseif currentCommand is MoveCommand
+                MoveCommand currentMove = cast(MoveCommand, currentCommand)
+                number distance = currentMove:GetDistance()
+                if distance not= 0
+                    if direction = UP
+                        currentMove:SetTarget(GetX(), GetY() + distance)
+                    elseif direction = LEFT
+                        currentMove:SetTarget(GetX() - distance, GetY())
+                    elseif direction = DOWN
+                        currentMove:SetTarget(GetX(), GetY() - distance)
+                    elseif direction = RIGHT
+                        currentMove:SetTarget(GetX() + distance, GetY())
+                    end
+                    currentMove:SetDistance(0)
+                end
+                currentMove:SetStart(GetX(), GetY())
+                number xTarget = currentMove:GetTargetX()
+                number yTarget = currentMove:GetTargetY()
+                number newX = GetX()
+                number newY = GetY()
+
+                // if drawable is close enough to the target, just set the drawable
+                // to be at the target. This prevents the drawable from moving back
+                // and forth upon reaching the target coordinates
+                if (-1 * speed * time <= xTarget - newX and xTarget - newX <= speed * time)
+                    SetX(xTarget)
+                end
+
+                if (-1 * speed * time <= yTarget - newY and yTarget - newY <= speed * time)
+                    SetY(yTarget)
+                end
+
+                if GetX() = xTarget and GetY() = yTarget
+                    commandQueue:RemoveFromFront()
+                end
+
+                newX = newX + speed * time * currentMove:GetXPercent()
+                newY = newY + speed * time * currentMove:GetYPercent()
+                SetX(newX)
+                SetY(newY)
+            elseif currentCommand is PenCommand
+                PenCommand currentPen = cast(PenCommand, currentCommand)
+                penDown = currentPen:IsPenDown()
+                commandQueue:RemoveFromFront()
+            end
+        end
+    end
+
+    action TurnLeft
+        RotationCommand rotation
+        rotation:TurnLeft()
+        commandQueue:Add(rotation)
+    end
+
+    action TurnRight
+        RotationCommand rotation
+        rotation:TurnRight()
+        commandQueue:Add(rotation)
+    end
+
+    action GetDirection returns integer
+        return direction
+    end
+
+    action IsPenDown returns boolean
+        return penDown
+    end
+
+    action AddCommand(Command command)
+        commandQueue:Add(command)
+    end
+end

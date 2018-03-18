@@ -1,0 +1,16 @@
+class PenCommand is Command
+
+    boolean penDown = true
+
+    action PenUp
+        penDown = false
+    end
+
+    action PenDown
+        penDown = true
+    end
+
+    action IsPenDown returns boolean
+        return penDown
+    end
+end

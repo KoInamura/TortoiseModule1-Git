@@ -1,0 +1,352 @@
+use Libraries.Game.Game
+use Libraries.Game.Graphics.Color
+use Libraries.Game.Graphics.Drawable
+use Libraries.Containers.Array
+use Libraries.Interface.Events.KeyboardListener
+use Libraries.Interface.Events.KeyboardEvent
+use Libraries.Interface.Events.CollisionEvent2D
+use Libraries.Interface.Events.CollisionListener2D
+use Libraries.Interface.Item2D
+use Libraries.Sound.Audio
+
+class TurtleProgram is Game, KeyboardListener, CollisionListener2D
+    //Creating main character
+    Turtle tortoise 
+
+    //Creating an object to give the user the direction the tortoise is facing
+    Audio beginSound
+    Audio rightLine
+    Audio leftLine
+    Audio upLine
+    Audio downLine
+    Audio moving
+
+    Color color
+    Color red = color:Red()
+    Color blue = color:Blue()
+
+    // An array containing each column of dots, where each column is stored in
+    // an array. 
+    Array<Array<Drawable>> columns
+
+    // An array to evaluate which lines are showing at the end of the program
+    Array<text> arrayOfLines
+
+    // Which column the green dot is in.
+    integer columnPosition = 0
+
+    // Which row the green dot is in.
+    integer rowPosition = 0
+
+    // How large each row and column of our grid is.
+    integer gridSize = 10
+
+    //Creating the counter that keeps track of the direction the tortoise is facing
+    //integer direction = 4
+    integer facing = 0
+
+    action CreateGame
+
+        //Make setting Horizontal lines easier
+        integer lineWidthH = 20
+        integer lineHeightH = 10
+
+        //Make setting vertical lines eaiser
+        integer lineWidthV = 10
+        integer lineHeightV = 20
+
+        text alphabet = "abcdefghijklmnopqrstuvwxyz"
+
+        //Make sure we monitor the collision.
+        AddCollisionListener(me)
+
+        // Make sure we can get keyboard input. Used to test "moving" around.
+        AddKeyboardListener(me)
+
+        // Counter that is used to set the x position of the dots.
+        integer x = 0
+
+        repeat while x < gridSize
+            // Counter that is used to set the y position of the dots.
+            integer y = 0
+
+            // An array that will contain all of the dots in this column.
+            Array<Drawable> column
+
+            repeat while y < gridSize
+                Drawable dot
+                dot:LoadFilledCircle(10, color:Blue())
+
+                // Use the x and y counters to set position. We multiply
+                // by 60 to provide some space between dots.
+                dot:SetPosition(x * 60, y * 60)
+                
+                // Add dot to the column array so we can reference it later, 
+                // and also add it to the Game so the user can see it.
+                Add(dot)
+                column:Add(dot)
+
+                dot:SetDescription("dot")
+                dot:SetCollidable(true)
+
+                Drawable rightLine
+                rightLine:LoadFilledRectangle(lineWidthH, lineHeightH, red)
+                rightLine:SetPosition(x * 60 + 30, y * 60 + 3)
+                Add(rightLine)
+                rightLine:Hide()
+                rightLine:SetCollidable(true)
+                text rowCharacter = alphabet:GetCharacter(y)
+                rightLine:SetName(rowCharacter + x + rowCharacter + (x + 1))
+                rightLine:SetDescription("line")
+
+                Drawable topLine
+                topLine:LoadFilledRectangle(lineWidthV, lineHeightV, red)
+                topLine:SetPosition(x * 60 + 3, y * 60 + 30)
+                Add(topLine)
+                topLine:Hide()
+                topLine:SetCollidable(true)
+                text nextRowCharacter = alphabet:GetCharacter(y + 1)
+                topLine:SetName(rowCharacter + x + nextRowCharacter + x)
+                topLine:SetDescription("line")
+                y = y + 1
+            end
+
+            // Once we've completely filled an array with a column of dots,
+            // add it to our outer array.
+            columns:Add(column)
+            x = x + 1
+        end
+
+        // Set our starting position.
+        // Take this off to implement the SetStartPos() ActivateDot(0, 0)
+
+        //Adding the main character to the game
+        tortoise:Load("TortoiseBadge.png")
+        tortoise:SetInitialPosition(columnPosition*60, rowPosition*60)
+        tortoise:SetSpeed(25)
+        tortoise:SetName("tortoise")
+        tortoise:SetCollidable(true)
+        Add(tortoise)
+
+        //Adding audio cue for the blind users
+        //Audio for the tortoise direction
+        beginSound:Load("Audio/CowboyFootstep.wav")
+        beginSound:Play()
+        
+        //Aduio for the line drawn
+        rightLine:Load("Audio/C right.wav")
+        leftLine:Load("Audio/C left.wav")
+        upLine:Load("Audio/C up.wav")
+        downLine:Load("Audio/C down.wav")
+         //Audio to indicate the tortoise is moving
+        moving:Load("Audio/ping.wav")
+
+        TurtleCommands()
+    end
+
+    /*
+    Where the commands to move the turtle go.
+    */
+    blueprint action TurtleCommands
+
+    /*
+    Using left, right, up, or down arrow keys, move the "active" dot. In the 
+    turtle module this would instead be based on calls to Forward() using the
+    stored direction.
+
+    Each condition checks to make sure it wouldn't go outside of the bounds of
+    the grid.
+    */
+    action PressedKey(KeyboardEvent event)
+        if event:keyCode = event:SPACE
+            LineShowing()
+        end
+    end
+
+    /*
+    An action that turns a dot blue based on its column and row position.
+    */
+    action DeactivateDot(integer x, integer y)
+        Array<Drawable> column = columns:Get(x)
+        Drawable dot = column:Get(y)
+        DeactivateDot(dot)
+    end
+
+    action DeactivateDot(Drawable dot)
+        dot:SetColor(color:Blue())
+    end
+
+    /*
+    An action that turns a dot green based on its column and row position.
+    */
+    action ActivateDot(integer x, integer y)
+        Array<Drawable> column = columns:Get(x)
+        Drawable dot = column:Get(y)
+        ActivateDot(dot)
+    end
+
+    action ActivateDot(Drawable dot)
+        dot:SetColor(color:Green())
+    end
+
+    action BeginCollision(CollisionEvent2D event)
+        Drawable itemA = cast(Drawable, event:GetItemA())
+        Drawable itemB = cast(Drawable, event:GetItemB())
+            
+        //Checking the penReady boolean
+        if tortoise:IsPenDown()
+        //Making lines visible as they collide withthe tortoise
+            
+            if itemA:GetDescription() = "line"
+                itemA:Show()
+                DirectionalSound()
+                arrayOfLines:Add(itemA:GetName() + ", ")
+            elseif itemB:GetDescription() = "line"
+                itemB:Show()
+                DirectionalSound()
+                arrayOfLines:Add(itemB:GetName() + ", ")
+            end
+        end
+
+        if itemA:GetDescription() = "line" or itemB:GetDescription() = "line"
+            moving:Play()
+        end
+
+        if itemA:GetDescription() = "dot"
+            ActivateDot(itemA)
+        elseif itemB:GetDescription() = "dot"
+            ActivateDot(itemB)
+        end
+    end
+
+    action FinishCollision(CollisionEvent2D event)
+        Drawable itemA = cast(Drawable, event:GetItemA())
+        Drawable itemB = cast(Drawable, event:GetItemB())
+
+        if itemA:GetDescription() = "dot"
+            DeactivateDot(itemA)
+        elseif itemB:GetDescription() = "dot"
+            DeactivateDot(itemB)
+        end
+    end
+
+    action DirectionalSound
+        integer direction = tortoise:GetDirection()
+        if direction = 1
+            leftLine:Play()
+        elseif direction = 3
+            rightLine:Play()
+        elseif direction = 2
+            downLine:Play()
+        elseif direction = 0
+            upLine:Play()
+        end
+    end
+
+//******* Creating Actions to be used by Code.org/Quorum CSP curriculum *******
+    action Forward
+        if facing = 1
+            if columnPosition > 0
+                columnPosition = columnPosition - 1
+                tortoise:MoveDistance(60)
+            else
+                output "Couldn't move left"
+            end
+        elseif facing = 3
+            if columnPosition < gridSize - 1
+                columnPosition = columnPosition + 1
+                tortoise:MoveDistance(60)
+            else
+                output "Couldn't move right"
+            end
+        elseif facing = 2
+            if rowPosition > 0
+                rowPosition = rowPosition - 1
+                tortoise:MoveDistance(60)
+            else
+                output "Couldn't move down"
+            end
+        elseif facing = 0
+            if rowPosition < gridSize - 1
+                rowPosition = rowPosition + 1
+                tortoise:MoveDistance(60)
+            else
+                output "Couldn't move up"
+            end
+        else
+            output "Unknown facing"
+        end
+    end
+
+    action TurnLeft
+        facing = (facing + 1) mod 4
+        tortoise:TurnLeft()
+    end
+
+    action PenDown
+        PenCommand command
+        command:PenDown()
+        tortoise:AddCommand(command)
+    end
+
+    action PenUp
+        PenCommand command
+        command:PenUp()
+        tortoise:AddCommand(command)
+    end
+
+    action LineShowing()
+        text startingText = ""
+        integer counter = 0
+
+        repeat arrayOfLines:GetSize() times
+            startingText = startingText + arrayOfLines:Get(counter)
+            counter = counter +1
+        end
+        output "The turtle has followed this path: " + startingText
+    end
+
+    action SetStartPosition(integer x)
+        if x = 1 or x = 2 
+            // A1
+            columnPosition = 1
+            rowPosition = 0
+        elseif x = 3 or x = 13 or x = 14
+            // A0
+            columnPosition = 0
+            rowPosition = 0
+        elseif x = 4 or x = 5 or x = 6 or x = 7 or x = 11 or x = 12
+            // E5
+            columnPosition = 5
+            rowPosition = 4
+        elseif x = 8 or x = 9 or x = 10
+            // A4
+            columnPosition = 4
+            rowPosition = 0
+        end
+    end
+
+    action MoveForward(integer x)
+        repeat x times
+            Forward()
+        end
+    end
+
+    action SetStartCoordinate(integer x, integer y)
+        columnPosition = x
+        rowPosition = y
+    end
+
+    action TurnByDegree(integer x)
+        if x = 270
+            TurnLeft()
+        elseif x = 180
+            TurnLeft()
+            TurnLeft()
+        elseif x = 90
+            TurnLeft()
+            TurnLeft()
+            TurnLeft()
+        end
+    end
+end
