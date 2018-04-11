@@ -7,8 +7,7 @@ class Main is TurtleProgram
 
     action TurtleCommands
 //**** MAIN CODING AREA STARTS HERE ****
- 
-
+        
 //**** MAIN CODING AREA ENDS HERE ****
     end
 //**** ACTION CODING AREA STARTS HERE ****

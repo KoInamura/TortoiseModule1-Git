@@ -121,7 +121,7 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
         // Take this off to implement the SetStartPos() ActivateDot(0, 0)
 
         //Adding the main character to the game
-        tortoise:Load("TortoiseBadge.png")
+        tortoise:Load("/media/code/TortoiseBadge.png")
         tortoise:SetInitialPosition(columnPosition*60, rowPosition*60)
         tortoise:SetSpeed(25)
         tortoise:SetName("tortoise")
@@ -130,16 +130,16 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
 
         //Adding audio cue for the blind users
         //Audio for the tortoise direction
-        beginSound:Load("Audio/CowboyFootstep.wav")
+        beginSound:Load("/media/code/CowboyFootstep.wav")
         beginSound:Play()
         
         //Aduio for the line drawn
-        rightLine:Load("Audio/C right.wav")
-        leftLine:Load("Audio/C left.wav")
-        upLine:Load("Audio/C up.wav")
-        downLine:Load("Audio/C down.wav")
+        rightLine:Load("/media/code//C right.wav")
+        leftLine:Load("/media/code//C left.wav")
+        upLine:Load("/media/code//C up.wav")
+        downLine:Load("/media/code//C down.wav")
          //Audio to indicate the tortoise is moving
-        moving:Load("Audio/ping.wav")
+        moving:Load("/media/code//ping.wav")
 
         TurtleCommands()
     end
@@ -243,7 +243,23 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
         end
     end
 
-//******* Creating Actions to be used by Code.org/Quorum CSP curriculum *******
+    action LineShowing()
+        text startingText = ""
+        integer counter = 0
+
+        repeat arrayOfLines:GetSize() times
+            startingText = startingText + arrayOfLines:Get(counter)
+            counter = counter +1
+        end
+        output "The turtle has followed this path: " + startingText
+    end
+
+/* 
+Available actions for users in Quorum Turtle Module class in standar Librar documentation.
+These actions are to be used mainly in Code.org/Quorum CSP curriculum
+*/
+
+    // Moving the turtle forward  one block to the direction it is facing
     action Forward
         if facing = 1
             if columnPosition > 0
@@ -278,34 +294,38 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
         end
     end
 
+    // Turning the turtle 90 degree to the left from the direction it is facing
     action TurnLeft
         facing = (facing + 1) mod 4
         tortoise:TurnLeft()
     end
 
+    /*
+    This command will make the turtle cready to draw a line between the adjacent
+    dots (horizontally or vertically).
+    */
     action PenDown
         PenCommand command
         command:PenDown()
         tortoise:AddCommand(command)
     end
 
+    /*
+    This command will suspend the turtle's ability to draw a line between the 
+    adjacent dots. When one of the moving command is issued after this command,
+    the turtle will not draw a line while moving to the next dot.
+    */
     action PenUp
         PenCommand command
         command:PenUp()
         tortoise:AddCommand(command)
     end
 
-    action LineShowing()
-        text startingText = ""
-        integer counter = 0
-
-        repeat arrayOfLines:GetSize() times
-            startingText = startingText + arrayOfLines:Get(counter)
-            counter = counter +1
-        end
-        output "The turtle has followed this path: " + startingText
-    end
-
+    /*
+    This action is exclusively used for some leesons in Unit 3 of Quorum CSP 
+    curriculum. This action initial position of the turtle at the appropriate 
+    coordinate for the specific 'Coding Challenges' in the Unit 3.
+    */
     action SetStartPosition(integer x)
         if x = 1 or x = 2 
             // A1
@@ -326,17 +346,29 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
         end
     end
 
+    /* 
+    This is the action that the user can control how many blocks the tturtle 
+    moves forward
+    */
     action MoveForward(integer x)
         repeat x times
             Forward()
         end
     end
 
+    /*
+    This action enables the user to set the starting position of the turtle
+    by X-Y coordinate position of the dots - such as (0, 0), (1, 5).
+    */
     action SetStartCoordinate(integer x, integer y)
         columnPosition = x
         rowPosition = y
     end
 
+    /*
+    This action enable the user to torn the turtle by specifing the one of the
+    preset directional degrees. 
+    */
     action TurnByDegree(integer x)
         if x = 270
             TurnLeft()
@@ -348,5 +380,15 @@ class TurtleProgram is Game, KeyboardListener, CollisionListener2D
             TurnLeft()
             TurnLeft()
         end
+    end
+
+    /*
+    This action enable the user to cotrol how fast the turtle moves. Only the 
+    user with complete familiarity with QTM should use this action. When the 
+    speed is set too fast, the user most likely looses the sound effect of the 
+    turtle's movement.
+    */
+    action SetTurtleSpeed(integer speed)
+        tortoise:SetSpeed(speed)
     end
 end
