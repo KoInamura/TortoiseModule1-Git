@@ -1,0 +1,70 @@
+use Libraries.Sound.Audio
+
+class SoundModule  
+    boolean voiceChoice = false
+    boolean useWav = false
+    /*
+        This action will set default values for the Audio files
+    */
+    action Initialize(Audio up, Audio down, Audio left, Audio right, Audio turnLeft, Audio turnRight, Audio penDownSound, Audio penUpSound, Audio moving)
+        moving:Load("/media/code//ping.wav")
+        if voiceChoice = false
+            if useWav = false
+                up:Load("/media/audioFiles/maleVoice//up.ogg")
+                down:Load("/media/audioFiles/maleVoice//down.ogg")
+                left:Load("/media/audioFiles/maleVoice//left.ogg")
+                right:Load("/media/audioFiles/maleVoice//right.ogg")
+                turnLeft:Load("/media/audioFiles/maleVoice//turnLeft.ogg")    
+                turnRight:Load("/media/audioFiles/maleVoice//turnRight.ogg")
+                penDownSound:Load("/media/audioFiles/maleVoice//penDown.ogg")
+                penUpSound:Load("/media/audioFiles/maleVoice//penUp.ogg")
+            elseif useWav = true
+                up:Load("/media/audioFiles/maleVoice//up.wav")
+                down:Load("/media/audioFiles/maleVoice//down.wav")
+                left:Load("/media/audioFiles/maleVoice//left.wav")
+                right:Load("/media/audioFiles/maleVoice//right.wav")
+                turnLeft:Load("/media/audioFiles/maleVoice//turnLeft.wav")    
+                turnRight:Load("/media/audioFiles/maleVoice//turnRight.wav")
+                penDownSound:Load("/media/audioFiles/maleVoice//penDown.wav")
+                penUpSound:Load("/media/audioFiles/maleVoice//penUp.wav")
+            end
+        elseif voiceChoice = true
+            if useWav = false
+                up:Load("/media/audioFiles/femaleVoice//up.ogg")
+                down:Load("/media/audioFiles/femaleVoice//down.ogg")
+                left:Load("/media/audioFiles/femaleVoice//left.ogg")
+                right:Load("/media/audioFiles/femaleVoice//right.ogg")
+                turnLeft:Load("/media/audioFiles/femaleVoice//turnLeft.ogg")    
+                turnRight:Load("/media/audioFiles/femaleVoice//turnRight.ogg")
+                penDownSound:Load("/media/audioFiles/femaleVoice//penDown.ogg")
+                penUpSound:Load("/media/audioFiles/femaleVoice//penUp.ogg")
+            elseif useWav = true
+                up:Load("/media/audioFiles/femaleVoice//up.wav")
+                down:Load("/media/audioFiles/femaleVoice//down.wav")
+                left:Load("/media/audioFiles/femaleVoice//left.wav")
+                right:Load("/media/audioFiles/femaleVoice//right.wav")
+                turnLeft:Load("/media/audioFiles/femaleVoice//turnLeft.wav")    
+                turnRight:Load("/media/audioFiles/femaleVoice//turnRight.wav")
+                penDownSound:Load("/media/audioFiles/femaleVoice//penDown.wav")
+                penUpSound:Load("/media/audioFiles/femaleVoice//penUp.wav")
+            end
+        end
+    end
+
+    action GetVoiceChoice()returns boolean
+        return voiceChoice
+    end
+    
+    action SetVoiceChoice(boolean value) 
+        voiceChoice = value
+    end 
+
+    action GetUseWav() returns boolean
+        return useWav
+    end
+
+    action SetUseWav(boolean value)
+        useWav = value
+    end
+
+end

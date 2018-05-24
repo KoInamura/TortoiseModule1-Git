@@ -22,17 +22,25 @@ class Turtle is Drawable
     integer direction = 0
     boolean penDown = true
 
-    Audio turnLeft
-    Audio turnRight
-    Audio penDownSound
-    Audio penUpSound
+    public Audio upLine
+    public Audio downLine
+    public Audio leftLine
+    public Audio rightLine
+    public Audio turnLeft
+    public Audio turnRight
+    public Audio penDownSound
+    public Audio penUpSound
+    public Audio moving
+    
+    public SoundModule soundModule
 
-    action InitializeSound()
-        /*Audio for turns */
-        turnLeft:Load("/media/wavFiles//turnLeft.wav")
-        turnRight:Load("/media/wavFiles//turnRight.wav")
-        penDownSound:Load("/media/wavFiles//penDown.wav")
-        penUpSound:Load("/media/wavFiles//penUp.wav")
+    action Initialize(text picture, number x, number y, integer speed, text name, boolean value )
+        SetSpritePicture(picture)
+        SetInitialPosition(y*60, x*60)
+        SetSpeed(speed)
+        SetName(name)
+        SetCollidable(value)
+        soundModule:Initialize(upLine, downLine, leftLine, rightLine, turnLeft, turnRight, penDownSound, penUpSound, moving)
     end
 
     Queue<Command> commandQueue
@@ -162,18 +170,18 @@ class Turtle is Drawable
                 SetY(newY)
             elseif currentCommand is PenCommand
                 PenCommand currentPen = cast(PenCommand, currentCommand)
-                /*if currentPen:IsPenDown() = false
-                    //penDownSound:Play()
-                    //penDown = currentPen:IsPenDown()
+                if IsPenDown() = true and currentPen:IsPenDown() = false
+                    penUpSound:Play()
+                    penDown = currentPen:IsPenDown()
                     if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
                         commandQueue:RemoveFromFront()
                     end    
-                elseif currentPen:IsPenDown() = true
-                    //penUpSound:Play()
-                    //penDown = currentPen:IsPenDown()*/
+                elseif IsPenDown() = false and currentPen:IsPenDown() = true
+                    penDownSound:Play()
+                    penDown = currentPen:IsPenDown()
                     if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
                     commandQueue:RemoveFromFront()
-                    //end
+                    end
                 end
             end
         end
@@ -206,4 +214,9 @@ class Turtle is Drawable
     action AddCommand(Command command)
         commandQueue:Add(command)
     end
+
+    action SetSpritePicture(text picture)
+        Load(picture)
+    end
+
 end

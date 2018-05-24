@@ -18,13 +18,6 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
     Speech talker
     //Creating an object to give the user the direction the tortoise is facing
     Audio beginSound
-    Audio rightLine
-    Audio leftLine
-    Audio upLine
-    Audio downLine
-    Audio turnLeft
-    Audio turnRight
-    Audio moving
 
     Color color
     Color red = color:Red()
@@ -126,11 +119,8 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         // Take this off to implement the SetStartPos() ActivateDot(0, 0)
 
         //Adding the main character to the game
-        tortoise:Load("/media/code/TortoiseBadge.png")
-        tortoise:SetInitialPosition(columnPosition*60, rowPosition*60)
-        tortoise:SetSpeed(25)
-        tortoise:SetName("tortoise")
-        tortoise:SetCollidable(true)
+        tortoise:Initialize("/media/code/TortoiseBadge.png", columnPosition, rowPosition, 25, "tortoise", true)
+
         Add(tortoise)
 
         //Adding audio cue for the blind users
@@ -138,17 +128,6 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         beginSound:Load("/media/code/CowboyFootstep.wav")
         beginSound:Play()
         
-        //Audio for the line drawn
-        rightLine:Load("/media/wavFiles//right.wav")
-        leftLine:Load("/media/wavFiles//left.wav")
-        upLine:Load("/media/wavFiles//up.wav")
-        downLine:Load("/media/wavFiles//down.wav")
-        
-         //Audio to indicate the tortoise is moving
-        moving:Load("/media/code//ping.wav")
-
-        tortoise:InitializeSound()
-
         TurtleCommands()
     end
 
@@ -217,7 +196,7 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         end
 
         if itemA:GetDescription() = "line" or itemB:GetDescription() = "line"
-            moving:Play()
+            tortoise:moving:Play()
         end
 
         if itemA:GetDescription() = "dot"
@@ -241,13 +220,13 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
     action DirectionalSound
         integer direction = tortoise:GetDirection()
         if direction = 1
-            leftLine:Play()
+            tortoise:leftLine:Play()
         elseif direction = 3
-            rightLine:Play()
+            tortoise:rightLine:Play()
         elseif direction = 2
-            downLine:Play()
+            tortoise:downLine:Play()
         elseif direction = 0
-            upLine:Play()
+            tortoise:upLine:Play()
         end
     end
 
