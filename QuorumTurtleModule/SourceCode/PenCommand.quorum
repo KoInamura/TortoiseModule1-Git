@@ -13,4 +13,8 @@ class PenCommand is Command
     action IsPenDown returns boolean
         return penDown
     end
+
+    action SetPenDown(boolean value)
+        penDown = value
+    end
 end

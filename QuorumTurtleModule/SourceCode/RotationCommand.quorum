@@ -1,18 +1,27 @@
 class RotationCommand is Command
     
     public integer LEFT = 1
-    public integer RIGHT = 2
+    public integer RIGHT = -1
     integer direction = 0
+    private boolean isRotating = false
 
     action TurnLeft
-        direction = 1
+        direction = LEFT
     end
 
     action TurnRight
-        direction = -1
+        direction = RIGHT
     end
 
     action GetDirection returns integer
         return direction
+    end
+
+    action IsRotating() returns boolean
+        return isRotating
+    end
+
+    action SetIsRotating(boolean rotating)
+        isRotating = rotating
     end
 end

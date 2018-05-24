@@ -4,6 +4,7 @@
 
 use Libraries.Game.Graphics.Drawable
 use Libraries.Containers.Queue
+use Libraries.Sound.Audio
 
 class Turtle is Drawable
     private number speed = 100
@@ -20,6 +21,19 @@ class Turtle is Drawable
     public constant integer RIGHT = 3
     integer direction = 0
     boolean penDown = true
+
+    Audio turnLeft
+    Audio turnRight
+    Audio penDownSound
+    Audio penUpSound
+
+    action InitializeSound()
+        /*Audio for turns */
+        turnLeft:Load("/media/wavFiles//turnLeft.wav")
+        turnRight:Load("/media/wavFiles//turnRight.wav")
+        penDownSound:Load("/media/wavFiles//penDown.wav")
+        penUpSound:Load("/media/wavFiles//penUp.wav")
+    end
 
     Queue<Command> commandQueue
 
@@ -45,6 +59,9 @@ class Turtle is Drawable
         speed = s
     end
 
+    action GetSpeed() returns number
+        return speed
+    end
     // Action tells the sprite to move to a coordinate. This move command will
     // execute when all move commands issued before it have completed.
     //
@@ -85,17 +102,24 @@ class Turtle is Drawable
 
             if currentCommand is RotationCommand
                 RotationCommand rotation = cast(RotationCommand, currentCommand)
-                if rotation:GetDirection() = rotation:LEFT
-                    Rotate(-90)
-                    direction = (direction + 1) mod 4
-                elseif rotation:GetDirection() = rotation:RIGHT
-                    Rotate(90)
-                    direction = direction - 1
-                    if direction < 0
-                        direction = 3
+                if rotation:IsRotating() = false
+                    if rotation:GetDirection() = rotation:LEFT
+                        Rotate(-90)
+                        direction = (direction + 1) mod 4
+                        turnLeft:Play()
+                    elseif rotation:GetDirection() = rotation:RIGHT
+                        Rotate(90)
+                        direction = direction - 1
+                        if direction < 0
+                            direction = 3
+                        end
+                        turnRight:Play()
                     end
+                    rotation:SetIsRotating(true)
+                elseif not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                    commandQueue:RemoveFromFront()
                 end
-                commandQueue:RemoveFromFront()
+                
             elseif currentCommand is MoveCommand
                 MoveCommand currentMove = cast(MoveCommand, currentCommand)
                 number distance = currentMove:GetDistance()
@@ -138,8 +162,19 @@ class Turtle is Drawable
                 SetY(newY)
             elseif currentCommand is PenCommand
                 PenCommand currentPen = cast(PenCommand, currentCommand)
-                penDown = currentPen:IsPenDown()
-                commandQueue:RemoveFromFront()
+                /*if currentPen:IsPenDown() = false
+                    //penDownSound:Play()
+                    //penDown = currentPen:IsPenDown()
+                    if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
+                        commandQueue:RemoveFromFront()
+                    end    
+                elseif currentPen:IsPenDown() = true
+                    //penUpSound:Play()
+                    //penDown = currentPen:IsPenDown()*/
+                    if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
+                    commandQueue:RemoveFromFront()
+                    //end
+                end
             end
         end
     end
@@ -162,6 +197,10 @@ class Turtle is Drawable
 
     action IsPenDown returns boolean
         return penDown
+    end
+
+    action SetPenDown(boolean value)
+        penDown = value
     end
 
     action AddCommand(Command command)

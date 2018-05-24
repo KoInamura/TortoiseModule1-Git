@@ -1,4 +1,4 @@
-class Main is TurtleProgram
+class Main is TurtleGame
     
     action Main
 //**** SET THE STARTING POSITION HERE ****
@@ -7,7 +7,21 @@ class Main is TurtleProgram
 
     action TurtleCommands
 //**** MAIN CODING AREA STARTS HERE ****
-        
+      SetStartCoordinates(5,5)
+      RepeatMoveForward(3)
+      TurnLeft()
+      TurnLeft()
+      TurnLeft()
+      MoveForward()
+      TurnLeft()
+      TurnLeft()
+      RepeatMoveForward(3)
+      PenUp()
+      TurnLeft()
+      MoveForward()
+      PenDown()
+      TurnLeft()
+      MoveForward()
 //**** MAIN CODING AREA ENDS HERE ****
     end
 //**** ACTION CODING AREA STARTS HERE ****
