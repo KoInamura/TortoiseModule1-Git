@@ -35,7 +35,7 @@ class Turtle is Drawable
     public SoundModule soundModule
 
      /*
-        This action Initializes the picture, initial position, speed, name, and collision boolean.
+        This action Initializes the picture, initial position, speed, name, and collision boolean. It also initializes the sound Module object which loads all the correct sounds.
 
         Attribute: Parameter picture The text field containing the path to the sprite graphic.
 
@@ -62,47 +62,82 @@ class Turtle is Drawable
         SetCollidable(value)
         soundModule:Initialize(upLine, downLine, leftLine, rightLine, turnLeft, turnRight, penDownSound, penUpSound, moving)
     end
-
+       
     Queue<Command> commandQueue
 
-    // This action sets the initial position for the Sprite object. Additionally
-    // this action sets the initial move state for the Sprite to be not moving
-    // at that position.
-    //
-    // Parameters:
-    //      number x:
-    //          x-coordinate of initial position
-    //      number y:
-    //          y-coordinate of initial position
+    /*
+        This action sets the initial position for the Sprite object. Additionally
+        this action sets the initial move state for the Sprite to be not moving
+        at that position.
+    
+        Attribute: Parameter x This field is the x-coordinate of initial position.
+
+        Attribute: Parameter y This field is the y-coordinate of initial position.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:SetInitialPosition(4.0, 1.)
+    */
+
     action SetInitialPosition(number x, number y)
         SetPosition(x, y)
     end
 
-    // This action sets the speed of the spirte.
-    //
-    // Parameters:
-    //      number s:
-    //          the number to set as the speed of the sprite
+    /*
+        This action sets the speed of the spirte.
+    
+        Attribute: Parameter number s The number to set as the speed of the sprite
+
+        Attribute: Example
+        Turtle turtle
+        turtle:SetSpeed(25)
+    */
+
     action SetSpeed(number s)
         speed = s
     end
 
+    /*
+        This action returns the speed field as a number value.
+    
+        Attribute: Example
+        Turtle turtle
+        turtle:GetSpeed()
+    */
+
     action GetSpeed() returns number
         return speed
     end
-    // Action tells the sprite to move to a coordinate. This move command will
-    // execute when all move commands issued before it have completed.
-    //
-    // Parameters:
-    //      number x:
-    //          x-coordinate of where to move to
-    //      number y:
-    //          y-coordinate of where to move to
+
+    /*
+        Action creates a MoveCommand object that is set to the new coordinates. This move command will
+        execute when all move commands issued before it have completed.
+    
+        Attribute: Parameters x x-coordinate of the target that the sprite is moving to.
+
+        Attribute: Parameters y y-coordinate of the target that the sprite is moving to.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:MoveTo(4.0, 3.0)
+    */
+
     action MoveTo(number x, number y)
         MoveCommand newMove
         newMove:SetTarget(x, y)
         commandQueue:Add(newMove)
     end
+
+    /* 
+        Action creates a MoveCommand object with the entered distance parameter. This move command will
+        execute when all move commands issued before it have completed.
+
+        Attribute: Parameter distance a number value of how far the sprite will move 
+
+        Attribute: Example
+        Turtle turtle
+        turtle:MoveDistance(3.0)
+    */
 
     action MoveDistance(number distance)
         MoveCommand newMove
@@ -110,17 +145,28 @@ class Turtle is Drawable
         commandQueue:Add(newMove)
     end
 
+    /* 
+       Action sets the amount of time period for when the Game will update.
+       Attribute: Example
+       Turtle turtle
+       turtle:Update(50.0)
+    */
 
-    // Action updates the sprite, deciding whether or not the sprite is ready
-    // to change move states. This is decided based on whether the sprite's
-    // coordinates are equal to the target move's coodinates.
-    //
-    // Parameters:
-    //      number time:
-    //          the number of seconds between frames
     action Update(number time)
         MoveSprite(time)
     end
+
+    /* 
+        Action updates the sprite, deciding whether or not the sprite is ready
+        to change move states. This is decided based on whether the sprite's
+        coordinates are equal to the target move's coodinates.
+    
+        Attribute: Parameter time the number of seconds between game updates.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:MoveSprite(50.0)
+    */
 
     private action MoveSprite(number time)
         if not commandQueue:IsEmpty()
@@ -207,33 +253,92 @@ class Turtle is Drawable
         end
     end
 
+    /* 
+        Action creates a RotationCommand object, calles the TurnLeft() action on the object, and then adds the command to the command queue.
+        
+        Attribute: Example
+        Turtle turtle
+        turtle:TurnLeft()
+    */
+
     action TurnLeft
         RotationCommand rotation
         rotation:TurnLeft()
         commandQueue:Add(rotation)
     end
-
+    /* 
+        Action creates a RotationCommand object, calles the TurnRight() action on the object, and then adds the command to the command queue.
+        
+        Attribute: Example
+        Turtle turtle
+        turtle:TurnRight()
+    */
     action TurnRight
         RotationCommand rotation
         rotation:TurnRight()
         commandQueue:Add(rotation)
     end
 
+    /*
+        Action returns the interger value assigned to a direction.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:GetDirection()
+    */
+
     action GetDirection returns integer
         return direction
     end
+
+    /*
+        Action returns the value stored in the boolean field penDown. This indicates the status of the pen.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:IsPenDown()
+    */
 
     action IsPenDown returns boolean
         return penDown
     end
 
+    /*
+        Action sets the value in the boolean field penDown. 
+
+        Attribute: Example
+        Turtle turtle
+        turtle:SetPenDown()
+    */
+
     action SetPenDown(boolean value)
         penDown = value
     end
 
+    /*
+        Action adds a command object to the command queue.
+
+        Attribute: Parameter command This is the command object to be added to the command queue.
+
+        Attribute: Example
+        Turtle turtle
+        MoveCommand moveCommand
+        turtle:AddCommand(moveCommand)
+    */
+
     action AddCommand(Command command)
         commandQueue:Add(command)
     end
+
+    /*
+    Action sets the picture to be used for the sprite. 
+
+    Attribute: picture Text object that contains the local path to the picture to be used for the sprite.
+
+    Attribute: Example
+    Turtle turtle
+    turtle:SetSpritePicture("/media//turtlepic.png")
+    */
 
     action SetSpritePicture(text picture)
         Load(picture)

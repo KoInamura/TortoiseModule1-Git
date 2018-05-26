@@ -11,76 +11,85 @@ use Libraries.Sound.Audio
 use Libraries.Sound.Speech
 
 class TurtleGame is Game, KeyboardListener, CollisionListener2D
-    //Creating main character
+    /*Creating main character*/
     Turtle tortoise 
 
-    // Create sound object for Say
+    /*Create sound object for Say*/
     Speech talker
-    //Creating an object to give the user the direction the tortoise is facing
+    /*Creating an object to give the user the direction the tortoise is facing*/
     Audio beginSound
 
     Color color
     Color red = color:Red()
     Color blue = color:Blue()
 
-    // An array containing each column of dots, where each column is stored in
-    // an array. 
+    /*An array containing each column of dots, where each column is stored in
+     an array.*/ 
     Array<Array<Drawable>> columns
 
-    // An array to evaluate which lines are showing at the end of the program
+    /* An array to evaluate which lines are showing at the end of the program*/
     Array<text> arrayOfLines
 
-    // Which column the green dot is in.
+    /*Which column the green dot is in.*/
     integer columnPosition = 0
 
-    // Which row the green dot is in.
+    /* Which row the green dot is in.*/
     integer rowPosition = 0
 
-    // How large each row and column of our grid is.
+    /* How large each row and column of our grid is.*/
     integer gridSize = 10
 
-    //Creating the counter that keeps track of the direction the tortoise is facing
-    //integer direction = 4
+    /*Creating the counter that keeps track of the direction the tortoise is facing
+    integer direction = 4*/
     integer facing = 0
+
+    /*
+        Action creates the game object for the turtle game, setting up the grid and creating
+        the line objects used when the pen is down.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:CreateGame()
+    */
 
     action CreateGame
 
-        //Make setting Horizontal lines easier
+        /*Make setting Horizontal lines easier */
         integer lineWidthH = 20
         integer lineHeightH = 10
 
-        //Make setting vertical lines eaiser
+        /*Make setting vertical lines easier */
         integer lineWidthV = 10
         integer lineHeightV = 20
 
         text alphabet = "abcdefghijklmnopqrstuvwxyz"
 
-        //Make sure we monitor the collision.
+        /*Make sure we monitor the collision.*/
         AddCollisionListener(me)
 
-        // Make sure we can get keyboard input. Used to test "moving" around.
+        /* Make sure we can get keyboard input. Used to test "moving" around.*/
         AddKeyboardListener(me)
 
-        // Counter that is used to set the x position of the dots.
+        /* Counter that is used to set the x position of the dots.*/
         integer x = 0
 
         repeat while x < gridSize
-            // Counter that is used to set the y position of the dots.
+            /* Counter that is used to set the y position of the dots.*/
             integer y = 0
 
-            // An array that will contain all of the dots in this column.
+            /* An array that will contain all of the dots in this column.*/
             Array<Drawable> column
 
             repeat while y < gridSize
                 Drawable dot
                 dot:LoadFilledCircle(10, color:Blue())
 
-                // Use the x and y counters to set position. We multiply
-                // by 60 to provide some space between dots.
+                /* Use the x and y counters to set position. We multiply
+                 by 60 to provide some space between dots.*/
                 dot:SetPosition(x * 60, y * 60)
                 
-                // Add dot to the column array so we can reference it later, 
-                // and also add it to the Game so the user can see it.
+                /* Add dot to the column array so we can reference it later, 
+                 and also add it to the Game so the user can see it.*/
                 Add(dot)
                 column:Add(dot)
 
@@ -109,22 +118,22 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
                 y = y + 1
             end
 
-            // Once we've completely filled an array with a column of dots,
-            // add it to our outer array.
+            /* Once we've completely filled an array with a column of dots,
+             add it to our outer array.*/
             columns:Add(column)
             x = x + 1
         end
 
-        // Set our starting position.
-        // Take this off to implement the SetStartPos() ActivateDot(0, 0)
+        /* Set our starting position.
+         Take this off to implement the SetStartPos() ActivateDot(0, 0)*/
 
-        //Adding the main character to the game
+        /*Adding the main character to the game 
+        /*Adding audio cue for the blind users*/
         tortoise:Initialize("/media/code/TortoiseBadge.png", columnPosition, rowPosition, 25, "tortoise", true)
 
         Add(tortoise)
 
-        //Adding audio cue for the blind users
-        //Audio for the tortoise direction
+        /*Audio for the beginning of the game*/
         beginSound:Load("/media/code/CowboyFootstep.wav")
         beginSound:Play()
         
@@ -143,6 +152,13 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
 
     Each condition checks to make sure it wouldn't go outside of the bounds of
     the grid.
+
+    Attribute: Parameter event Passed keyboard event to move the sprite.
+   
+    Attribute: Example
+    TurtleGame turtleGame
+    KeyBoardEvent event
+    turtleGame:PressedKey(event)
     */
     action PressedKey(KeyboardEvent event)
         if event:keyCode = event:SPACE
@@ -152,12 +168,32 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
 
     /*
     An action that turns a dot blue based on its column and row position.
+
+    Attribute: Parameter x used to get the row based on the x-coordinate.
+
+    Attribute: Parameter y used as the index to get the y-coordinate from the row 
+
+    Attribute: Example
+    TurtleGame turtleGame
+    turtleGame:DeactivateDot(5.0, 4.0)
     */
+
     action DeactivateDot(integer x, integer y)
         Array<Drawable> column = columns:Get(x)
         Drawable dot = column:Get(y)
         DeactivateDot(dot)
     end
+
+    /*
+    An action that sets the color attribute of the dot object to blue.
+
+    Attribute: Parameter dot The dot object that will have its color set.
+
+    Attribute: Example
+    TurtleGame turtleGame
+    Drawable dot
+    turtleGame:DeactivateDot(dot)
+    */
 
     action DeactivateDot(Drawable dot)
         dot:SetColor(color:Blue())
@@ -165,24 +201,55 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
 
     /*
     An action that turns a dot green based on its column and row position.
+
+    Attribute: Parameter x used to get the row based on the x-coordinate.
+
+    Attribute: Parameter y used as the index to get the y-coordinate from the row 
+
+    Attribute: Example
+    TurtleGame turtleGame
+    turtleGame:ActivateDot(5.0, 4.0)
     */
+
     action ActivateDot(integer x, integer y)
         Array<Drawable> column = columns:Get(x)
         Drawable dot = column:Get(y)
         ActivateDot(dot)
     end
 
+    /*
+    An action that sets the color attribute of the dot object to green.
+
+    Attribute: Parameter dot The dot object that will have its color set.
+
+    Attribute: Example
+    TurtleGame turtleGame
+    Drawable dot
+    turtleGame:ActivateDot(dot)
+    */ 
+
     action ActivateDot(Drawable dot)
         dot:SetColor(color:Green())
     end
+
+    /*
+        Action that is needed by Drawable objects to deal with a collision event has been detected. If dots are detected they are changed to green
+
+        Attribute: Parameter event A 2d Collision event that has been detected by a listener.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        CollisionEvent2D event
+        turtleGame:BeginCollision(event)
+    */
 
     action BeginCollision(CollisionEvent2D event)
         Drawable itemA = cast(Drawable, event:GetItemA())
         Drawable itemB = cast(Drawable, event:GetItemB())
             
-        //Checking the penReady boolean
+        /*Checking the penReady boolean */
         if tortoise:IsPenDown()
-        //Making lines visible as they collide withthe tortoise
+        /*Making lines visible as they collide withthe tortoise */
             
             if itemA:GetDescription() = "line"
                 itemA:Show()
@@ -206,6 +273,17 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         end
     end
 
+    /* 
+        Action needed to detect when the collision event has ended. Changes any detected dots to blue.
+
+        Attribute event a 2D collision event that has been detected by a listener.
+
+        Attribute Example:
+        TurtleGame turtleGame
+        CollisionEvent2D event 
+        turtleGame:FinishCollision(event)
+    */
+
     action FinishCollision(CollisionEvent2D event)
         Drawable itemA = cast(Drawable, event:GetItemA())
         Drawable itemB = cast(Drawable, event:GetItemB())
@@ -216,6 +294,14 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
             DeactivateDot(itemB)
         end
     end
+
+    /* 
+        Action that gets the integer direction of the turtle object then plays the corresponding directional sound.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:DirectionalSound
+    */
 
     action DirectionalSound
         integer direction = tortoise:GetDirection()
@@ -229,6 +315,14 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
             tortoise:upLine:Play()
         end
     end
+
+    /* 
+        Action that outputs the text path of the turtle. It is based on the arrayOfLine object.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:LineShowing()
+    */
 
     action LineShowing()
         text startingText = ""
@@ -246,7 +340,14 @@ Available actions for users in Quorum Turtle Module class in standar Librar docu
 These actions are to be used mainly in Code.org/Quorum CSP curriculum
 */
 
-    // Moving the turtle forward  one block to the direction it is facing
+    /* 
+        Action that moves the turtle forward one block to the direction it is facing
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:MoveForward()
+     */
+
     action MoveForward
         if facing = 1
             if columnPosition > 0
@@ -281,7 +382,14 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         end
     end
 
-    // Turning the turtle 90 degree to the left from the direction it is facing
+    /* 
+        Action that turns the turtle 90 degree to the left from the direction it is facing using the Turtle object turnLeft action
+        
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:TurnLeft()
+    */
+
     action TurnLeft
         facing = (facing + 1) mod 4
         tortoise:TurnLeft()
@@ -289,9 +397,14 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /*
-    This command will make the turtle cready to draw a line between the adjacent
-    dots (horizontally or vertically).
+        This command will make the turtle cready to draw a line between the adjacent
+        dots (horizontally or vertically).
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:PenDown()
     */
+
     action PenDown
         PenCommand command
         command:PenDown()
@@ -299,10 +412,15 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /*
-    This command will suspend the turtle's ability to draw a line between the 
-    adjacent dots. When one of the moving command is issued after this command,
-    the turtle will not draw a line while moving to the next dot.
+        This command will suspend the turtle's ability to draw a line between the 
+        adjacent dots. When one of the moving command is issued after this command,
+        the turtle will not draw a line while moving to the next dot.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:PenUp()
     */
+
     action PenUp
         PenCommand command
         command:PenUp()
@@ -310,10 +428,17 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /*
-    This action is exclusively used for some leesons in Unit 3 of Quorum CSP 
-    curriculum. This action initial position of the turtle at the appropriate 
-    coordinate for the specific 'Coding Challenges' in the Unit 3.
+        This action is exclusively used for some leesons in Unit 3 of Quorum CSP 
+        curriculum. This action initial position of the turtle at the appropriate 
+        coordinate for the specific 'Coding Challenges' in the Unit 3.
+
+        Attribute: Parameter x and integer value that is used for predefined choices of movements.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:SetStartPosition(3)
     */
+
     action SetStartPosition(integer x)
         if x = 1 or x = 2 
             // A1
@@ -335,9 +460,15 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /* 
-    This is the action that the user can control how many blocks the tturtle 
-    moves forward
+        Action that repeates the MoveForward() action the number of times given by the integer input.
+
+        Attribute: Parameter x Integer values used for the number of repeated MoveForward() actions.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:RepeatMoveForward(4)
     */
+
     action RepeatMoveForward(integer x)
         repeat x times
             MoveForward()
@@ -345,9 +476,18 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /*
-    This action enables the user to set the starting position of the turtle
-    by X-Y coordinate position of the dots - such as (0, 0), (1, 5).
+        This action enables the user to set the starting position of the turtle
+        by X-Y integer position of the dots in the array - such as (0, 0), (1, 5).
+
+        Attribute: Parameter x the integer value used to get the row for the x-coordinate of the dot.
+        
+        Attribute: Parameter y the integer value used to get the y coordinate of the dots position.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:SetStartCoordinates(3,4)
     */
+
     action SetStartCoordinates(integer x, integer y)
         Array<Drawable> column = columns:Get(x)
         Drawable dot = column:Get(y)
@@ -357,14 +497,28 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
     end
 
     /*
-    This action enable the user to cotrol how fast the turtle moves. Only the 
-    user with complete familiarity with QTM should use this action. When the 
-    speed is set too fast, the user most likely looses the sound effect of the 
-    turtle's movement.
+        This action enable the user to cotrol how fast the turtle moves. Only the 
+        user with complete familiarity with QTM should use this action. When the 
+        speed is set too fast, the user most likely looses the sound effect of the 
+        turtle's movement.
+
+        Attribute: Parameter speed An integer value for the speed of the turtle object.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:SetTurtleSpeed(50.0)
     */
     action SetTurtleSpeed(number speed)
         tortoise:SetSpeed(speed)
     end
+
+    /* 
+        Action that returns the current set speed of the turtle object.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:GetTurtleSpeed()
+    */
 
     action GetTurtleSpeed() returns number
         return tortoise:GetSpeed()
