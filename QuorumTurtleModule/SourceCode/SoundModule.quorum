@@ -4,7 +4,30 @@ class SoundModule
     boolean voiceChoice = false
     boolean useWav = false
     /*
-        This action will set default values for the Audio files
+        This action Initializes the list of Audio objects by calling the Load() action on each object. Default booleans(false, false) are Male Voice and .ogg file format.
+
+        Attribute: Parameter up The Audio object for the sound to be played when going up.
+
+        Attribute: Parameter down The Audio object for the sound to be played when going down.
+
+        Attribute: Parameter left The Audio object for the sound to be played when going left.
+
+        Attribute: Parameter right The Audio object for the sound to be played when going right.
+
+        Attribute: Parameter turnLeft The Audio object for the sound to be played when turning left.
+
+        Attribute: Parameter turnRight The Audio object for the sound to be played when turning right.
+
+        Attribute: Parameter penDownSound The Audio object for the sound to be played when the pen is down.
+
+        Attribute: Parameter penUpSound The Audio object for the sound to be played when pen is up.
+
+        Attribute: Parameter moving The Audio object for the sound to be played when moving.
+
+        Attribute: Example
+        SoundModule soundModule
+        soundModule:Initialize(up, down, left, right, turnLeft, turnRight, penDownSound, penUpSound, moving)
+        )
     */
     action Initialize(Audio up, Audio down, Audio left, Audio right, Audio turnLeft, Audio turnRight, Audio penDownSound, Audio penUpSound, Audio moving)
         moving:Load("/media/code//ping.wav")
@@ -51,17 +74,53 @@ class SoundModule
         end
     end
 
+    /*
+        This action returns the current voiceChoice boolean.
+
+        Attribute: Example
+        SoundModule soundModule
+        soundModule:GetVoiceChoice()
+    */ 
+
     action GetVoiceChoice()returns boolean
         return voiceChoice
     end
-    
+
+     /*
+        This action sets the voiceChoice boolean.
+
+        Attribute: Parameter value Choices are either true for female and false for male.
+
+        Attribute: Example
+        SoundModule soundModule
+        soundModule:SetVoiceChoice(true)
+    */    
+
     action SetVoiceChoice(boolean value) 
         voiceChoice = value
     end 
 
+    /*
+        This action returns the current useWav boolean.
+
+        Attribute: Example
+        SoundModule soundModule
+        soundModule:GetUseWav()
+    */ 
+
     action GetUseWav() returns boolean
         return useWav
     end
+
+     /*
+        This action sets the voiceChoice boolean.
+
+        Attribute: Parameter value Choices are either true for .wav and false for .ogg
+
+        Attribute: Example
+        SoundModule soundModule
+        soundModule:SetuseWav(true)
+    */   
 
     action SetUseWav(boolean value)
         useWav = value

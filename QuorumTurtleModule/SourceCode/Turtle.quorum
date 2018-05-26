@@ -34,6 +34,26 @@ class Turtle is Drawable
     
     public SoundModule soundModule
 
+     /*
+        This action Initializes the picture, initial position, speed, name, and collision boolean.
+
+        Attribute: Parameter picture The text field containing the path to the sprite graphic.
+
+        Attribute: Parameter x The number value for the starting x-coordinate for the sprite.
+
+        Attribute: Parameter y The number value for the starting y-coordinate for the sprite.
+
+        Attribute: Parameter speed The starting integer value for the speed
+
+        Attribute: Parameter name The text value for the name for the sprite 
+
+        Attribute: Parameter value The default boolean value for the Collision boolean.
+
+        Attribute: Example
+        Turtle turtle
+        turtle:Initialize(/media/picture/turtle.png, 2.5, 3.0, 25, "turtle", true)
+    */   
+
     action Initialize(text picture, number x, number y, integer speed, text name, boolean value )
         SetSpritePicture(picture)
         SetInitialPosition(y*60, x*60)
