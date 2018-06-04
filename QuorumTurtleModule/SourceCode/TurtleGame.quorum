@@ -129,7 +129,7 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
 
         /*Adding the main character to the game 
         /*Adding audio cue for the blind users*/
-        tortoise:Initialize("/media/code/TortoiseBadge.png", columnPosition, rowPosition, 25, "tortoise", true)
+        tortoise:Initialize("/media/code/arrow.png", columnPosition, rowPosition, 25, "tortoise", true)
 
         Add(tortoise)
 
@@ -263,7 +263,9 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         end
 
         if itemA:GetDescription() = "line" or itemB:GetDescription() = "line"
-            tortoise:moving:Play()
+            if tortoise:GetMusicPlaying() = true
+                tortoise:moving:Play()
+            end
         end
 
         if itemA:GetDescription() = "dot"
@@ -409,6 +411,7 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         PenCommand command
         command:PenDown()
         tortoise:AddCommand(command)
+        tortoise:SetMusicPlaying(true)
     end
 
     /*
@@ -425,6 +428,7 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         PenCommand command
         command:PenUp()
         tortoise:AddCommand(command)
+        tortoise:SetMusicPlaying(false)
     end
 
     /*
@@ -488,7 +492,7 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         turtleGame:SetStartCoordinates(3,4)
     */
 
-    action SetStartCoordinates(integer x, integer y)
+    action SetStartingCoordinates(integer x, integer y)
         Array<Drawable> column = columns:Get(x)
         Drawable dot = column:Get(y)
         rowPosition = x

@@ -7,7 +7,18 @@ class Main is TurtleGame
 
     action TurtleCommands
 //**** MAIN CODING AREA STARTS HERE ****
-
+        SetStartingCoordinates(4, 2)
+        RepeatMoveForward(2)
+        TurnLeft()
+        MoveForward()
+        PenUp()
+        TurnLeft()
+        RepeatMoveForward(2)
+        TurnLeft()
+        PenDown()
+        MoveForward()
+        TurnLeft()
+        MoveForward()
 //**** MAIN CODING AREA ENDS HERE ****
     end
 //**** ACTION CODING AREA STARTS HERE ****

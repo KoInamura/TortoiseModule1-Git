@@ -30,7 +30,8 @@ class SoundModule
         )
     */
     action Initialize(Audio up, Audio down, Audio left, Audio right, Audio turnLeft, Audio turnRight, Audio penDownSound, Audio penUpSound, Audio moving)
-        moving:Load("/media/code//ping.wav")
+        /* Loyalty_Freak_Music_-_15_-_Walking_Shoes is original sound clip CC0 from freemusicarchive.org/music/Loyalty_Freak_Music/INSTRUMENTAL_RB_BEATS_TO_SING_OR_RAP_ON/Loyalty_Freak_Music_-_INSTRUMENTAL_RB_BEATS_TO_SING_OR_RAP_ON_-_15_Walking_Shoes  */
+        moving:Load("/media/audioFiles//moving.ogg")
         if voiceChoice = false
             if useWav = false
                 up:Load("/media/audioFiles/maleVoice//up.ogg")

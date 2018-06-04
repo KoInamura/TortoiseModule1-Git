@@ -21,6 +21,7 @@ class Turtle is Drawable
     public constant integer RIGHT = 3
     integer direction = 0
     boolean penDown = true
+    boolean musicPlaying = false
 
     public Audio upLine
     public Audio downLine
@@ -237,17 +238,19 @@ class Turtle is Drawable
             elseif currentCommand is PenCommand
                 PenCommand currentPen = cast(PenCommand, currentCommand)
                 if IsPenDown() = true and currentPen:IsPenDown() = false
-                    penUpSound:Play()
-                    penDown = currentPen:IsPenDown()
-                    if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
+                    if not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                        penUpSound:Play()
+                        penDown = currentPen:IsPenDown()
                         commandQueue:RemoveFromFront()
-                    end    
-                elseif IsPenDown() = false and currentPen:IsPenDown() = true
-                    penDownSound:Play()
-                    penDown = currentPen:IsPenDown()
-                    if not(penDownSound:IsPlaying() or penUpSound:IsPlaying())
-                    commandQueue:RemoveFromFront()
                     end
+                    
+                elseif IsPenDown() = false and currentPen:IsPenDown() = true
+                    if not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                        penDownSound:Play()
+                        penDown = currentPen:IsPenDown()
+                        commandQueue:RemoveFromFront()
+                    end
+                
                 end
             end
         end
@@ -344,4 +347,11 @@ class Turtle is Drawable
         Load(picture)
     end
 
+    action SetMusicPlaying(boolean value)
+        musicPlaying = value
+    end
+
+    action GetMusicPlaying() returns boolean
+        return musicPlaying
+    end
 end
