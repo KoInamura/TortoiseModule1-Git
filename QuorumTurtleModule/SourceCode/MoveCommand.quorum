@@ -11,6 +11,7 @@ class MoveCommand is Command
     private number xStart = 0
     private number yStart = 0
     private Math math
+    private boolean hasStarted = false
     private boolean startSet = false
 
     private number distance = 0
@@ -193,5 +194,13 @@ class MoveCommand is Command
 
     action GetDistance returns number
         return distance
+    end
+
+    action GetHasStarted() returns boolean
+        return hasStarted
+    end
+
+    action SetHasStarted(boolean value)
+        hasStarted = value
     end
 end

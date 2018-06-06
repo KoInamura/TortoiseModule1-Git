@@ -136,6 +136,7 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
         /*Audio for the beginning of the game*/
         beginSound:Load("/media/code/CowboyFootstep.wav")
         beginSound:Play()
+        tortoise:moving:Play()
         
         TurtleCommands()
     end
@@ -253,20 +254,18 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
             
             if itemA:GetDescription() = "line"
                 itemA:Show()
-                DirectionalSound()
                 arrayOfLines:Add(itemA:GetName() + ", ")
             elseif itemB:GetDescription() = "line"
                 itemB:Show()
-                DirectionalSound()
                 arrayOfLines:Add(itemB:GetName() + ", ")
             end
         end
 
-        if itemA:GetDescription() = "line" or itemB:GetDescription() = "line"
-            if tortoise:GetMusicPlaying() = true
-                tortoise:moving:Play()
-            end
-        end
+//        if itemA:GetDescription() = "line" or itemB:GetDescription() = "line"
+//            if tortoise:GetMovingMusic() = true
+//                tortoise:moving:Play()
+//            end
+//        end
 
         if itemA:GetDescription() = "dot"
             ActivateDot(itemA)
@@ -294,27 +293,6 @@ class TurtleGame is Game, KeyboardListener, CollisionListener2D
             DeactivateDot(itemA)
         elseif itemB:GetDescription() = "dot"
             DeactivateDot(itemB)
-        end
-    end
-
-    /* 
-        Action that gets the integer direction of the turtle object then plays the corresponding directional sound.
-
-        Attribute: Example
-        TurtleGame turtleGame
-        turtleGame:DirectionalSound
-    */
-
-    action DirectionalSound
-        integer direction = tortoise:GetDirection()
-        if direction = 1
-            tortoise:leftLine:Play()
-        elseif direction = 3
-            tortoise:rightLine:Play()
-        elseif direction = 2
-            tortoise:downLine:Play()
-        elseif direction = 0
-            tortoise:upLine:Play()
         end
     end
 
@@ -411,7 +389,7 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         PenCommand command
         command:PenDown()
         tortoise:AddCommand(command)
-        tortoise:SetMusicPlaying(true)
+        tortoise:SetMovingMusic(true)
     end
 
     /*
@@ -428,7 +406,7 @@ These actions are to be used mainly in Code.org/Quorum CSP curriculum
         PenCommand command
         command:PenUp()
         tortoise:AddCommand(command)
-        tortoise:SetMusicPlaying(false)
+        tortoise:SetMovingMusic(false)
     end
 
     /*

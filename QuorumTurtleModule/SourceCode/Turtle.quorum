@@ -22,6 +22,7 @@ class Turtle is Drawable
     integer direction = 0
     boolean penDown = true
     boolean musicPlaying = false
+    boolean soundPlaying = false
 
     public Audio upLine
     public Audio downLine
@@ -181,23 +182,34 @@ class Turtle is Drawable
                     if rotation:GetDirection() = rotation:LEFT
                         Rotate(-90)
                         direction = (direction + 1) mod 4
-                        turnLeft:Play()
+                        if IsSoundPlaying() = false
+                            turnLeft:Play()
+                        end
                     elseif rotation:GetDirection() = rotation:RIGHT
                         Rotate(90)
                         direction = direction - 1
                         if direction < 0
                             direction = 3
                         end
-                        turnRight:Play()
+                        if IsSoundPlaying() = false
+                            turnRight:Play()
+                        end
                     end
                     rotation:SetIsRotating(true)
-                elseif not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                elseif IsSoundPlaying() = false
                     commandQueue:RemoveFromFront()
                 end
                 
             elseif currentCommand is MoveCommand
                 MoveCommand currentMove = cast(MoveCommand, currentCommand)
                 number distance = currentMove:GetDistance()
+                
+                if currentMove:GetHasStarted() = false
+                    if IsSoundPlaying() = false
+                       DirectionalSound()
+                       currentMove:SetHasStarted(true)
+                    end
+                end
                 if distance not= 0
                     if direction = UP
                         currentMove:SetTarget(GetX(), GetY() + distance)
@@ -238,16 +250,18 @@ class Turtle is Drawable
             elseif currentCommand is PenCommand
                 PenCommand currentPen = cast(PenCommand, currentCommand)
                 if IsPenDown() = true and currentPen:IsPenDown() = false
-                    if not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                    if IsSoundPlaying() = false
                         penUpSound:Play()
                         penDown = currentPen:IsPenDown()
+                        moving:Stop()
                         commandQueue:RemoveFromFront()
                     end
                     
                 elseif IsPenDown() = false and currentPen:IsPenDown() = true
-                    if not(turnLeft:IsPlaying() or turnRight:IsPlaying())
+                    if IsSoundPlaying() = false
                         penDownSound:Play()
                         penDown = currentPen:IsPenDown()
+                        moving:Play()
                         commandQueue:RemoveFromFront()
                     end
                 
@@ -336,7 +350,7 @@ class Turtle is Drawable
     /*
     Action sets the picture to be used for the sprite. 
 
-    Attribute: picture Text object that contains the local path to the picture to be used for the sprite.
+    Attribute: Parameter picture Text object that contains the local path to the picture to be used for the sprite.
 
     Attribute: Example
     Turtle turtle
@@ -347,11 +361,83 @@ class Turtle is Drawable
         Load(picture)
     end
 
-    action SetMusicPlaying(boolean value)
+    /*
+    Action sets movingMusic boolean to parameter value.
+
+    Attribute: Parameter boolean value False indicates no music, true is music
+
+    Attribute: Example
+    Turtle turtle
+    turtle:SetMovingMusic(true)
+    */
+
+    action SetMovingMusic(boolean value)
         musicPlaying = value
     end
 
-    action GetMusicPlaying() returns boolean
+    /*
+    Action returns the movingMusic boolean
+
+    Attribute: Parameter value Boolean false indicates not playing and true indicates playing
+ 
+    Attribute: Example
+    Turtle turtle
+    turtle:SetMovingMusic(true)
+    */
+
+    action GetMovingMusic() returns boolean
         return musicPlaying
     end
+
+    /*
+    Action checks each audio object to see if it is playing and if it is true is returned 
+
+    Attribute: Example
+    Turtle turtle
+    turtle:IsSoundPlaying()
+    */
+
+    action IsSoundPlaying() returns boolean
+        if (upLine:IsPlaying() or downLine:IsPlaying() or leftLine:IsPlaying() or rightLine:IsPlaying() or turnLeft:IsPlaying() or turnRight:IsPlaying() or penDownSound:IsPlaying() or penUpSound:IsPlaying())
+            soundPlaying = true
+        else
+            soundPlaying = false
+        end
+        
+        return soundPlaying
+    end
+
+    /*
+    Action sets the soundPlaying boolean to the value entered
+
+    Attribute: Parameter value Boolean false indicates a sound is not playing and true is sound playing
+    Attribute: Example
+    Turtle turtle
+    turtle:IsSoundPlaying()
+    */
+
+    action SetSoundPlaying(boolean value)
+        soundPlaying = value
+    end
+    /* 
+        Action that gets the integer direction of the turtle object then plays the corresponding directional sound.
+
+        Attribute: Example
+        TurtleGame turtleGame
+        turtleGame:DirectionalSound
+    */
+
+    action DirectionalSound()
+        integer direction = GetDirection()
+        if direction = 1
+            leftLine:Play()
+        elseif direction = 3
+            rightLine:Play()
+        elseif direction = 2
+            downLine:Play()
+        elseif direction = 0
+            upLine:Play()
+        end
+    end
+
 end
