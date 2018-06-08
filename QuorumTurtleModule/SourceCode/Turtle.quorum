@@ -172,7 +172,15 @@ class Turtle is Drawable
 
     private action MoveSprite(number time)
         if not commandQueue:IsEmpty()
-            newMoveSet = false
+            newMoveSet = false            
+
+            if moving:IsPlaying() = false
+                if IsPenDown() = true
+                    moving:Play()
+                else
+                    moving:Stop()
+                end
+            end
 
             Command currentCommand = commandQueue:GetFromFront()
 
