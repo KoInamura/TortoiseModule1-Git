@@ -1,3 +1,5 @@
+package Libraries.Curriculum.TurtleProgram
+
 use Libraries.Game.Graphics.Color
 
 class ChangePropertiesCommand is Command

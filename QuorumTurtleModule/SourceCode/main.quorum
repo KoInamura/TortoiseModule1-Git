@@ -1,3 +1,5 @@
+use Libraries.Curriculum.TurtleProgram.TurtleGame
+
 class Main is TurtleGame
 
     action Main
