@@ -1,3 +1,9 @@
 class Command 
-    // Used as an interface for various commands performed by the Turtle.
+    
+    blueprint action Start(Turtle turtle)
+
+    blueprint action Update(number seconds)
+
+    blueprint action IsFinished returns boolean
+
 end

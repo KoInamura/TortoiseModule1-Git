@@ -1,17 +1,17 @@
 class Main is TurtleGame
-    
+
     action Main
-//**** SET THE STARTING POSITION HERE ****
         StartGame()
     end
 
     action TurtleCommands
-//**** MAIN CODING AREA STARTS HERE ****
+        //**** MAIN CODING AREA STARTS HERE ****
 
-//**** MAIN CODING AREA ENDS HERE ****
+        //**** MAIN CODING AREA ENDS HERE ****
     end
-//**** ACTION CODING AREA STARTS HERE ****
+
+    //**** ACTION CODING AREA STARTS HERE ****
     
 
-//**** ACTION CODING AREA ENDS HERE ****
+    //**** ACTION CODING AREA ENDS HERE ****
 end
